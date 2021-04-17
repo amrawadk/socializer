@@ -7,6 +7,9 @@ authors = ["Amr Awad"]
 [tool.poetry.dependencies]
 python = "^3.9"
 selenium = "^3.141.0"
+google-api-python-client = "^2.2.0"
+google-auth-httplib2 = "^0.1.0"
+google-auth-oauthlib = "^0.4.4"
 
 [tool.poetry.dev-dependencies]
 black = "^20.8b1"
