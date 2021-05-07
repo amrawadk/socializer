@@ -1,26 +1,14 @@
 from typing import List
 from socializer.models import Contact
-from socializer.errors import ContactGroupNotFound
+from socializer.google_contacts.errors import ContactGroupNotFound
+from socializer.google_contacts.models import GooglePerson
 import os.path
 from typing import List
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
-from dataclasses import dataclass
 
-
-@dataclass
-class GooglePerson:
-    """Google's representation of a person"""
-
-    body: dict
-
-    def to_contact(self) -> Contact:
-        return Contact(
-            name=self.body["names"][0].get("displayName"),
-            phone_num=self.body["phoneNumbers"][0].get("canonicalForm"),
-        )
 
 
 class GoogleContactsManager:
