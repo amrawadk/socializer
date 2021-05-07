@@ -1,6 +1,6 @@
 import pytest
 import socializer as sz
-import socializer.errors as errors
+import socializer.google_contacts.errors as errors
 
 def test_non_existing_group_name_raises_exception() -> None:
     gcontacts = sz.GoogleContactsManager()
