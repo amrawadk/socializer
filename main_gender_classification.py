@@ -1,32 +1,32 @@
-import csv
 import logging
-from urllib.parse import quote
+from typing import List
 
-import requests
-import requests_cache
+from dataclass_csv import DataclassReader, DataclassWriter
 
-requests_cache.install_cache("genderapi_cache")
+from socializer.data_augmentation import GenderClassifier
+from socializer.models import Contact
 
 logging.basicConfig(format="%(asctime)s - %(levelname)s - %(message)s")
 
+classifier = GenderClassifier()
 
-def detect_gender(name: str) -> dict:
-    response = requests.get("https://genderapi.io/api/?name=" + quote(name))
-    assert response.status_code == 200
-    response_json = response.json()
+contacts_with_gender: List[Contact] = []
 
-    if response_json["probability"] < 90:
-        logging.error(
-            "Name '%s' gender detected as '%s' with probability %s",
-            name,
-            response_json["gender"],
-            response_json["probability"],
-        )
+with open("contacts.csv") as contacts_csv:
+    reader = DataclassReader(contacts_csv, Contact)
+    for contact in reader:
+        gender_classification = classifier.classify(name=contact.first_name)
+        if gender_classification.probability < 90:
+            logging.error(
+                "Name '%s' gender detected as '%s' with probability %s",
+                contact.first_name,
+                gender_classification.gender,
+                gender_classification.probability,
+            )
+        else:
+            contact.gender = gender_classification.gender
+            contacts_with_gender.append(contact)
 
-    return response.json()["gender"]
-
-
-with open("people.csv") as people_csv:
-    reader = csv.DictReader(people_csv)
-    for row in reader:
-        print(row["given_name"], detect_gender(name=row["given_name"]))
+with open("contacts_with_gender.csv", "w") as contacts_with_gender_csv:
+    writer = DataclassWriter(contacts_with_gender_csv, contacts_with_gender, Contact)
+    writer.write()

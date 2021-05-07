@@ -7,7 +7,9 @@ faker = Faker()
 
 def test_conversion_to_contact():
     display_name = faker.first_name()
+    given_name = faker.first_name()
     phone_num = faker.phone_number()
+    prefix = faker.prefix()
 
     metadata = {
         "primary": True,
@@ -20,9 +22,10 @@ def test_conversion_to_contact():
                 {
                     "displayName": display_name,
                     "displayNameLastFirst": faker.first_name(),
-                    "givenName": faker.first_name(),
+                    "givenName": given_name,
                     "metadata": metadata,
                     "unstructuredName": faker.first_name(),
+                    "honorificPrefix": prefix,
                 }
             ],
             "phoneNumbers": [
@@ -40,5 +43,6 @@ def test_conversion_to_contact():
 
     contact = person.to_contact()
 
-    assert contact.name == display_name
+    assert contact.first_name == given_name
     assert contact.phone_num == phone_num
+    assert contact.prefix == prefix

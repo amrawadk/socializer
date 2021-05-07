@@ -45,4 +45,6 @@ class GooglePerson:
         return self.body["names"][0]
 
     def to_contact(self) -> Contact:
-        return Contact(name=self.name, phone_num=self.phone_num)
+        return Contact(
+            prefix=self.prefix, first_name=self.given_name, phone_num=self.phone_num
+        )
