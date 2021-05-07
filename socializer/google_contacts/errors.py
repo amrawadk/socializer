@@ -1,3 +1,5 @@
+# pylint: disable=super-init-not-called
+# TODO I don't think the super call is needed here, but should confirm.
 class ContactGroupNotFound(RuntimeError):
     def __init__(self, group_name: str) -> None:
         self.group_name = group_name

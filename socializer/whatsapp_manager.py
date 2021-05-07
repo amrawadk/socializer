@@ -20,9 +20,12 @@ class WhatsAppManager:
         self.driver = webdriver.Chrome(options=options, executable_path=driver_path)
 
     def sendwhatmsg(self, phone_no, message):
-        parsedMessage = quote(message)
+        parsed_massage = quote(message)
         self.driver.get(
-            "https://web.whatsapp.com/send?phone=" + phone_no + "&text=" + parsedMessage
+            "https://web.whatsapp.com/send?phone="
+            + phone_no
+            + "&text="
+            + parsed_massage
         )
 
         button_xpath = '//*[@id="main"]/footer/div[1]/div[3]/button'

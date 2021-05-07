@@ -12,7 +12,7 @@ from socializer.google_contacts.models import GooglePerson
 
 class GoogleContactsManager:
     """Handles all API interactions with Google Contacts.
-    
+
     This should only be aware of google contacts errors and models, and not use any of the general models
     Appropriate mapping should be done in the adapter."""
 
