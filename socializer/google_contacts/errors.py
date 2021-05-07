@@ -6,3 +6,18 @@ class ContactGroupNotFound(RuntimeError):
 
     def __str__(self) -> str:
         return f"No Contact Group found for name: {self.group_name}"
+
+
+class GooglePersonError(RuntimeError):
+    def __init__(self, person) -> None:
+        self.person = person
+
+
+class GooglePersonHasMoreThanOneName(GooglePersonError):
+    def __str__(self) -> str:
+        return f"Expected a single name for '{self.person.name}', found {len(self.person.body['names'])}!"
+
+
+class GooglePersonHasNoNames(GooglePersonError):
+    def __str__(self) -> str:
+        return f"Expected a single name for '{self.person.name}', found None!"
