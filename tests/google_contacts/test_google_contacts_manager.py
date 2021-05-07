@@ -1,6 +1,7 @@
 import pytest
-from socializer.google_contacts.manager import GoogleContactsManager
+
 import socializer.google_contacts.errors as errors
+from socializer.google_contacts.manager import GoogleContactsManager
 
 
 class TestPeople:

@@ -1,6 +1,7 @@
-from socializer.models import Contact
-from socializer.google_contacts.manager import GoogleContactsManager
 from typing import List
+
+from socializer.google_contacts.manager import GoogleContactsManager
+from socializer.models import Contact
 
 
 class GoogleContactsAdapter:

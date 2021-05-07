@@ -1,5 +1,6 @@
-import socializer as sz
 from dataclass_csv import DataclassWriter
+
+import socializer as sz
 from socializer.models import Contact
 
 

@@ -1,5 +1,6 @@
-from socializer.google_contacts.models import GooglePerson
 from faker import Faker
+
+from socializer.google_contacts.models import GooglePerson
 
 faker = Faker()
 

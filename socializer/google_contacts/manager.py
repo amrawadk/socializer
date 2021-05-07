@@ -1,12 +1,13 @@
-from typing import List
-from socializer.google_contacts.errors import ContactGroupNotFound
-from socializer.google_contacts.models import GooglePerson
 import os.path
 from typing import List
-from googleapiclient.discovery import build
-from google_auth_oauthlib.flow import InstalledAppFlow
+
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
+from google_auth_oauthlib.flow import InstalledAppFlow
+from googleapiclient.discovery import build
+
+from socializer.google_contacts.errors import ContactGroupNotFound
+from socializer.google_contacts.models import GooglePerson
 
 
 class GoogleContactsManager:
