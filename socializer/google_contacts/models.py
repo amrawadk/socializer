@@ -7,8 +7,16 @@ class GooglePerson:
 
     body: dict
 
+    @property
+    def name(self) -> str:
+        return self.body["names"][0].get("displayName")
+
+    @property
+    def phone_num(self) -> str:
+        return self.body["phoneNumbers"][0].get("canonicalForm")
+
     def to_contact(self) -> Contact:
         return Contact(
-            name=self.body["names"][0].get("displayName"),
-            phone_num=self.body["phoneNumbers"][0].get("canonicalForm"),
+            name=self.name,
+            phone_num=self.phone_num,
         )

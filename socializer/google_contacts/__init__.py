@@ -1,1 +1,1 @@
-from .manager import GoogleContactsManager
+from .adapter import GoogleContactsAdapter

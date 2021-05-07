@@ -1,5 +1,4 @@
 from typing import List
-from socializer.models import Contact
 from socializer.google_contacts.errors import ContactGroupNotFound
 from socializer.google_contacts.models import GooglePerson
 import os.path
@@ -10,14 +9,17 @@ from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 
 
-
 class GoogleContactsManager:
+    """Handles all API interactions with Google Contacts.
+    
+    This should only be aware of google contacts errors and models, and not use any of the general models
+    Appropriate mapping should be done in the adapter."""
     SCOPES = ["https://www.googleapis.com/auth/contacts"]
 
     def __init__(self) -> None:
         self.service = build("people", "v1", credentials=self._get_credentials())
 
-    def get_contacts(self, limit: int = 20) -> List[Contact]:
+    def get_people(self, limit: int = 20) -> List[GooglePerson]:
         results = (
             self.service.people()
             .connections()
@@ -29,18 +31,11 @@ class GoogleContactsManager:
             .execute()
         )
         connections = results.get("connections", [])
+        return [GooglePerson(body=person) for person in connections]
 
-        contacts: List[Contact] = []
-        for person in connections:
-            contacts.append(
-                Contact(
-                    name=person["names"][0].get("displayName"),
-                    phone_num=person["phoneNumbers"][0].get("canonicalForm"),
-                )
-            )
-        return contacts
-
-    def get_contacts_in_group(self, group_name: str, limit: int = 20) -> List[Contact]:
+    def get_people_in_group(
+        self, group_name: str, limit: int = 20
+    ) -> List[GooglePerson]:
         ## Get id of that group name
         response = self.service.contactGroups().list().execute()
         contact_groups = response.get("contactGroups", [])
@@ -75,7 +70,7 @@ class GoogleContactsManager:
         )
 
         responses = response.get("responses")
-        return [GooglePerson(body=response["person"]).to_contact() for response in responses]
+        return [GooglePerson(body=response["person"]) for response in responses]
 
     def update_contacts(self):
         """Update contact details.
