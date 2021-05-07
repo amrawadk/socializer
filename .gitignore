@@ -1,3 +1,5 @@
 .vscode
 
 secrets
+
+__pycache__

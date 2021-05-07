@@ -1,15 +1,30 @@
 from typing import List
 from socializer.models import Contact
+from socializer.errors import ContactGroupNotFound
 import os.path
 from typing import List
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
+from dataclasses import dataclass
+
+
+@dataclass
+class GooglePerson:
+    """Google's representation of a person"""
+
+    body: dict
+
+    def to_contact(self) -> Contact:
+        return Contact(
+            name=self.body["names"][0].get("displayName"),
+            phone_num=self.body["phoneNumbers"][0].get("canonicalForm"),
+        )
 
 
 class GoogleContactsManager:
-    SCOPES = ["https://www.googleapis.com/auth/contacts.readonly"]
+    SCOPES = ["https://www.googleapis.com/auth/contacts"]
 
     def __init__(self) -> None:
         self.service = build("people", "v1", credentials=self._get_credentials())
@@ -20,7 +35,7 @@ class GoogleContactsManager:
             .connections()
             .list(
                 resourceName="people/me",
-                personFields="names,phoneNumbers",
+                personFields="names,phoneNumbers,genders",
                 pageSize=limit,
             )
             .execute()
@@ -37,8 +52,51 @@ class GoogleContactsManager:
             )
         return contacts
 
-    def get_contacts_in_group(group_name: str) -> List[Contact]:
-        ...
+    def get_contacts_in_group(self, group_name: str, limit: int = 20) -> List[Contact]:
+        ## Get id of that group name
+        response = self.service.contactGroups().list().execute()
+        contact_groups = response.get("contactGroups", [])
+        group_resource_name = next(
+            (
+                group["resourceName"]
+                for group in contact_groups
+                if group.get("name") == group_name
+            ),
+            None,
+        )
+        if group_resource_name is None:
+            raise ContactGroupNotFound(group_name=group_name)
+
+        ## Get members of that group
+        response = (
+            self.service.contactGroups()
+            .get(resourceName=group_resource_name, maxMembers=limit)
+            .execute()
+        )
+
+        # TODO: is this ever empty?
+        member_resource_names = response["memberResourceNames"]
+
+        response = (
+            self.service.people()
+            .getBatchGet(
+                resourceNames=member_resource_names,
+                personFields="names,phoneNumbers,genders",
+            )
+            .execute()
+        )
+
+        responses = response.get("responses")
+        return [GooglePerson(body=response["person"]).to_contact() for response in responses]
+
+    def update_contacts(self):
+        """Update contact details.
+
+        TODO implement this
+
+        - example for updating contact details
+        # self.service.people().updateContact(resourceName=person['resourceName'], updatePersonFields='genders', body={'etag': person['etag'], 'genders': [{'value': 'male'}]}).execute()
+        """
 
     def _get_credentials(self):
         creds = None
