@@ -14,6 +14,7 @@ class GoogleContactsManager:
     
     This should only be aware of google contacts errors and models, and not use any of the general models
     Appropriate mapping should be done in the adapter."""
+
     SCOPES = ["https://www.googleapis.com/auth/contacts"]
 
     def __init__(self) -> None:

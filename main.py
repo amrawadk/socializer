@@ -1,18 +1,15 @@
 import socializer as sz
-import time
+from dataclass_csv import DataclassWriter
+from socializer.models import Contact
+
 
 def main():
-    gcontacts = sz.GoogleContactsManager()
-    whats = sz.WhatsAppManager()
+    gcontacts = sz.GoogleContactsAdapter()
+    contacts = gcontacts.get_contacts_in_group(group_name="Family", limit=25)
 
-    contacts = gcontacts.get_contacts(limit=5)
+    with open("contacts.csv", "w") as f:
+        w = DataclassWriter(f, contacts, Contact)
+        w.write()
 
-    for contact in contacts:
-        translated_name = sz.NameTranslator.translate_name(contact.name)
-        whats.sendwhatmsg(
-            phone_no="+201115492142",
-            message=f"{contact.name} ({translated_name}) -> {contact.phone_num}"
-        )
-        time.sleep(10)
 
 main()

@@ -2,12 +2,14 @@ from socializer.models import Contact
 from socializer.google_contacts.manager import GoogleContactsManager
 from typing import List
 
+
 class GoogleContactsAdapter:
     """Handles mapping functionality between google contacts and general domain
 
     This should not include any API interactions (should be delegated to the manager).
     TODO This should ideally also map the errors into general domain errors.
     """
+
     _manager: GoogleContactsManager
 
     def __init__(self) -> None:
