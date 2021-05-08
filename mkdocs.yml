@@ -1,0 +1,20 @@
+site_name: Socializer
+
+theme:
+    name: 'material'
+    palette:
+        primary: 'black'
+        accent: 'teal'
+    icon:
+        repo: fontawesome/brands/github-alt
+    # TODO add logo
+    logo: 'img/icon-white.svg'
+    favicon: 'img/favicon.png'
+
+nav:
+    - Socializer: 'index.md'
+    - Road Map: 'roadmap.md'
+
+plugins:
+    - search
+    - mermaid2

@@ -23,6 +23,9 @@ pytest = "^6.2.4"
 Faker = "^8.1.2"
 pre-commit = "^2.12.1"
 pylint = "^2.8.2"
+mkdocs = "^1.1.2"
+mkdocs-material = "^7.1.4"
+mkdocs-mermaid2-plugin = "^0.5.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
