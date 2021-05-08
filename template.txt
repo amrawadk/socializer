@@ -1,0 +1,6 @@
+<%
+    pronoun = "انتي" if gender == "Gender.FEMALE" else "انت"
+    tayeb = "طيبة" if gender == "Gender.FEMALE" else "طيب"
+    name = prefix if prefix else first_name
+%>
+كل سنه و ${pronoun} ${tayeb} يا ${name} <3 عيد سعيد عليكم جميعا ^_^
