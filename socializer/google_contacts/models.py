@@ -46,7 +46,7 @@ class GooglePerson:
         return self._get_name_dict()["givenName"]
 
     def _get_phone_num(self) -> str:
-        return self.body["phoneNumbers"][0].get("canonicalForm")
+        return self.body["phoneNumbers"][0]["canonicalForm"]
 
     def _get_name_dict(self) -> dict[str, str]:
         if len(self.body["names"]) > 1:
@@ -59,8 +59,7 @@ class GooglePerson:
         gender = None
         if self.body.get("genders"):
             body_gender = self.body["genders"][0]["value"]
-            if body_gender in Gender:
-                gender = Gender(body_gender)
+            gender = Gender.from_str(body_gender)
         return gender
 
     def to_contact(self) -> Contact:

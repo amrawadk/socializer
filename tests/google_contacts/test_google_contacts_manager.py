@@ -22,11 +22,15 @@ class TestPeople:
 
         assert person.gender != desired_gender
 
-        person = gcontacts.update_gender(person=person, gender=desired_gender)
+        person = gcontacts.update_gender(
+            resource_name=person.resource_name, etag=person.etag, gender=desired_gender
+        )
         assert person.gender == desired_gender
 
         # Clean up after test, to make sure it's not destructive
-        person = gcontacts.update_gender(person=person, gender=current_gender)
+        person = gcontacts.update_gender(
+            resource_name=person.resource_name, etag=person.etag, gender=current_gender
+        )
 
 
 class TestGroups:

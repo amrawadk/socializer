@@ -75,18 +75,17 @@ class GoogleContactsManager:
         responses = response.get("responses")
         return [GooglePerson(body=response["person"]) for response in responses]
 
-    # TODO should this perhaps be a method on 'person'? I don't like this API ...
     def update_gender(
-        self, person: GooglePerson, gender: Optional[Gender]
+        self, resource_name: str, etag: str, gender: Optional[Gender]
     ) -> GooglePerson:
         gender_value = "other" if gender is None else gender.value
 
         response = (
             self.service.people()
             .updateContact(
-                resourceName=person.resource_name,
+                resourceName=resource_name,
                 updatePersonFields="genders",
-                body={"etag": person.etag, "genders": [{"value": gender_value}]},
+                body={"etag": etag, "genders": [{"value": gender_value}]},
             )
             .execute()
         )

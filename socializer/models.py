@@ -12,6 +12,13 @@ class Gender(Enum, metaclass=MyEnumMeta):
     MALE = "male"
     FEMALE = "female"
 
+    @classmethod
+    def from_str(cls, string: str) -> Optional["Gender"]:
+        gender = None
+        if string in Gender:
+            gender = Gender(string)
+        return gender
+
 
 @dataclass
 class Contact:
