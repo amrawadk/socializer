@@ -58,7 +58,7 @@ def _check_missing_gender(people: List[GooglePerson]):
 
 
 @app.command()
-def analyze_group(name: str, limit: int = 20):
+def analyze_group(name: str = typer.Option(...), limit: int = 20):
     """Analyze Google Contacts Group and optionally add any missing data."""
     typer.echo(f"Analyzing contact group: {name} ...")
 
@@ -84,6 +84,22 @@ def export_contacts(
     writer = DataclassWriter(output, contacts, Contact)
     writer.write()
     typer.echo(f"contacts written to {output.name}")
+
+
+@app.command()
+def export_people(
+    group_name: str = typer.Option(...),
+    output: typer.FileTextWrite = typer.Option("people.csv"),
+    limit: int = 20,
+):
+    """Export People in a google contact group to a csv file.
+
+    This includes more details than Contact"""
+    people = gmanager.get_people_in_group(group_name=group_name, limit=limit)
+
+    writer = DataclassWriter(output, people, GooglePerson)
+    writer.write()
+    typer.echo(f"people written to {output.name}")
 
 
 if __name__ == "__main__":
