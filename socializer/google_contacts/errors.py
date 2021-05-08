@@ -15,9 +15,9 @@ class GooglePersonError(RuntimeError):
 
 class GooglePersonHasMoreThanOneName(GooglePersonError):
     def __str__(self) -> str:
-        return f"Expected a single name for '{self.person.name}', found {len(self.person.body['names'])}!"
+        return f"Expected a single name for '{self.person.display_name}', found {len(self.person.body['names'])}!"
 
 
 class GooglePersonHasNoNames(GooglePersonError):
     def __str__(self) -> str:
-        return f"Expected a single name for '{self.person.name}', found None!"
+        return f"Expected a single name for '{self.person}', found None!"

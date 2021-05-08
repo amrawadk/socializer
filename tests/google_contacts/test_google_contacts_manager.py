@@ -2,6 +2,7 @@ import pytest
 
 import socializer.google_contacts.errors as errors
 from socializer.google_contacts.manager import GoogleContactsManager
+from socializer.models import Gender
 
 
 class TestPeople:
@@ -10,6 +11,22 @@ class TestPeople:
 
         people = gcontacts.get_people(limit=5)
         assert len(people) == 5
+
+    def test_update_gender_works(self) -> None:
+        gcontacts = GoogleContactsManager()
+
+        person = gcontacts.get_people(limit=1)[0]
+
+        current_gender = person.gender
+        desired_gender = Gender.FEMALE if current_gender == Gender.MALE else Gender.MALE
+
+        assert person.gender != desired_gender
+
+        person = gcontacts.update_gender(person=person, gender=desired_gender)
+        assert person.gender == desired_gender
+
+        # Clean up after test, to make sure it's not destructive
+        person = gcontacts.update_gender(person=person, gender=current_gender)
 
 
 class TestGroups:

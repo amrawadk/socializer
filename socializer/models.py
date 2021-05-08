@@ -1,9 +1,14 @@
 from dataclasses import dataclass
-from enum import Enum
+from enum import Enum, EnumMeta
 from typing import Optional
 
 
-class Gender(Enum):
+class MyEnumMeta(EnumMeta):
+    def __contains__(cls, item):
+        return item in [v.value for v in cls.__members__.values()]
+
+
+class Gender(Enum, metaclass=MyEnumMeta):
     MALE = "male"
     FEMALE = "female"
 

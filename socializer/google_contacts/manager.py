@@ -1,5 +1,5 @@
 import os.path
-from typing import List
+from typing import List, Optional
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -8,6 +8,7 @@ from googleapiclient.discovery import build
 
 from socializer.google_contacts.errors import ContactGroupNotFound
 from socializer.google_contacts.models import GooglePerson
+from socializer.models import Gender
 
 
 class GoogleContactsManager:
@@ -74,14 +75,23 @@ class GoogleContactsManager:
         responses = response.get("responses")
         return [GooglePerson(body=response["person"]) for response in responses]
 
-    def update_contacts(self):
-        """Update contact details.
+    # TODO should this perhaps be a method on 'person'? I don't like this API ...
+    def update_gender(
+        self, person: GooglePerson, gender: Optional[Gender]
+    ) -> GooglePerson:
+        gender_value = "other" if gender is None else gender.value
 
-        TODO implement this
+        response = (
+            self.service.people()
+            .updateContact(
+                resourceName=person.resource_name,
+                updatePersonFields="genders",
+                body={"etag": person.etag, "genders": [{"value": gender_value}]},
+            )
+            .execute()
+        )
 
-        - example for updating contact details
-        # self.service.people().updateContact(resourceName=person['resourceName'], updatePersonFields='genders', body={'etag': person['etag'], 'genders': [{'value': 'male'}]}).execute()
-        """
+        return GooglePerson(body=response)
 
     def _get_credentials(self):
         creds = None
