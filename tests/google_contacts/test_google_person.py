@@ -13,7 +13,7 @@ class BaseTest:
     # TODO is there a better way? I don't necessarily wanna lay those out fully
     # here, as it'd be too verbose with little to gain.
     def _generate_body(self, gender: Optional[str] = None) -> dict:
-        display_name = faker.first_name()
+        self.display_name = faker.first_name()
         self.given_name = faker.first_name()
         self.phone_num = faker.phone_number()
         self.prefix = faker.prefix()
@@ -29,7 +29,7 @@ class BaseTest:
             "etag": self.etag,
             "names": [
                 {
-                    "displayName": display_name,
+                    "displayName": self.display_name,
                     "displayNameLastFirst": faker.first_name(),
                     "givenName": self.given_name,
                     "metadata": self.metadata,
@@ -98,6 +98,7 @@ class TestContactConversion(BaseTest):
         contact = person.to_contact()
 
         assert contact.first_name == self.given_name
+        assert contact.full_name == self.display_name
         assert contact.phone_num == self.phone_num
         assert contact.prefix == self.prefix
         assert contact.gender == Gender.MALE

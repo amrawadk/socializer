@@ -64,6 +64,7 @@ class GooglePerson:
 
     def to_contact(self) -> Contact:
         return Contact(
+            full_name=self.display_name,
             prefix=self.prefix,
             first_name=self.given_name,
             phone_num=self.phone_num,

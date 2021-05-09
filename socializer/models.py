@@ -22,6 +22,7 @@ class Gender(Enum, metaclass=MyEnumMeta):
 
 @dataclass
 class Contact:
+    full_name: str
     first_name: str
     phone_num: str
     prefix: Optional[str] = None
