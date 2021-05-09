@@ -1,5 +1,10 @@
 <%
-    pronoun = "انتي" if gender == "Gender.FEMALE" else "انت"
+    # Choose Pronoun
+    if prefix:
+        pronoun = "حضرتك"
+    else:
+        pronoun = "انتي" if gender == "Gender.FEMALE" else "انت"
+
     tayeb = "طيبة" if gender == "Gender.FEMALE" else "طيب"
     name = prefix if prefix else first_name
 %>

@@ -5,14 +5,13 @@
     - I could make the contact names in Arabic
 
 ## Next Steps
-- Now that we have genders in 'contacts_with_gender',
-    - figure out how to handle low confidence detections
-    - [x] sync genders back to google contacts
-    - [x] Use gender specific templates to generate messages.
+- [ ] figure out how to add religion to profiles and auto fill it (similar to gender)
+- [ ] Filter out english names in targeting
+- [ ] Preview messages with auto updates
+- [ ] Start Collect data from linkedin connections
 
 ## Organization
-- Figure out how to represent flows (perhaps a cli with typer?) to replace main_* files and allow easy reruns
-- 
+- Figure out how to preview messages for people while writing templates.
 
 ## Open questions
 - Should we use requests cache for 'get' requests from Google Contacts API?
