@@ -5,8 +5,8 @@
     - I could make the contact names in Arabic
 
 ## Next Steps
-- [ ] figure out how to add religion to profiles and auto fill it (similar to gender)
 - [ ] Filter out english names in targeting
+- [ ] figure out how to add religion to profiles and auto fill it (similar to gender)
 - [ ] Preview messages with auto updates
 - [ ] Start Collect data from linkedin connections
 

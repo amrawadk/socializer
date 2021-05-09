@@ -1,4 +1,5 @@
 """Automation first approach to building and maintaing personal networks."""
+import enum
 from typing import List
 
 import typer
@@ -103,6 +104,41 @@ def export_people(
     writer = DataclassWriter(output, people, GooglePerson)
     writer.write()
     typer.echo(f"people written to {output.name}")
+
+
+# TODO should this be dynamic?
+class FieldFilters(enum.Enum):
+    GENDER = "gender"
+
+
+@app.command()
+def generate_audience(
+    group_name: str = typer.Option(...),
+    fields: List[FieldFilters] = typer.Option(
+        [], "--field", "-f", help="A required field that the audience should have"
+    ),
+    output: typer.FileTextWrite = typer.Option("contacts.csv"),
+    limit: int = 20,
+):
+    """Export Audience filtered by certain conditions to a csv file."""
+    gcontacts_manager = GoogleContactsAdapter()
+    contacts = gcontacts_manager.get_contacts_in_group(
+        group_name=group_name, limit=limit
+    )
+
+    typer.echo(f"Found {len(contacts)} people in the group")
+
+    filtered_contacts = [
+        c for c in contacts if all((getattr(c, f.value) for f in fields))
+    ]
+    fields_str = [f.value for f in fields]
+    typer.echo(
+        f"{len(filtered_contacts)} contacts matched the filters: '{' & '.join(fields_str)}'"
+    )
+
+    writer = DataclassWriter(output, contacts, Contact)
+    writer.write()
+    typer.echo(f"contacts written to {output.name}")
 
 
 if __name__ == "__main__":
