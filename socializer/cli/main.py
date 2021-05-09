@@ -18,12 +18,19 @@ app = typer.Typer(name="socializer", help=__doc__)
 
 def _fix_missing_genders(gmanager: GoogleContactsManager, people: List[GooglePerson]):
     classifier = GenderClassifier()
-    for person in people:
+    for idx, person in enumerate(people):
         result = classifier.classify(name=person.given_name)
+        message = "[{current}/{total}] Recommendation for '{name}' is '{gender}' ({probability}%)': ".format(
+            current=idx + 1,
+            total=len(people),
+            name=person.given_name,
+            gender=result.gender,
+            probability=result.probability,
+        )
         questions = [
             {
                 "type": "expand",
-                "message": f"Recommendation for '{person.given_name}' is '{result.gender}' ({result.probability}%)': ",
+                "message": message,
                 "name": "gender",
                 "default": "a",
                 "choices": [

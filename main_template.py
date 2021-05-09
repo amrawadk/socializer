@@ -9,14 +9,19 @@ template = Template(filename="template.txt")
 
 @dataclass
 class Message:
-    first_name: str
+    full_name: str
+    gender: str
     message: str
 
 
 with open("contacts.csv") as contacts_csv:
     reader = csv.DictReader(contacts_csv)
     messages = [
-        Message(first_name=contact["first_name"], message=template.render(**contact))
+        Message(
+            full_name=contact["full_name"],
+            gender=contact["gender"],
+            message=template.render(**contact),
+        )
         for contact in reader
     ]
 
