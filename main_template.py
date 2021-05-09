@@ -10,7 +10,7 @@ template = Template(filename="template.txt")
 @dataclass
 class Message:
     full_name: str
-    gender: str
+    phone_num: str
     message: str
 
 
@@ -19,7 +19,7 @@ with open("contacts.csv") as contacts_csv:
     messages = [
         Message(
             full_name=contact["full_name"],
-            gender=contact["gender"],
+            phone_num=contact["phone_num"],
             message=template.render(**contact),
         )
         for contact in reader
