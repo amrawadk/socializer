@@ -11,6 +11,9 @@
 - [ ] Start Collect data from linkedin connections
 - [ ] Workaround the 50 resource per request limit for groups
 
+## Improvements
+- [ ] use tqdm for nicer progress bars
+- [ ] replace `typer.echo` with structlog
 ## Organization
 - Figure out how to preview messages for people while writing templates.
 - Figure out how to perform updates on `Contact` and have other systems pick them up

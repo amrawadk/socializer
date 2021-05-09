@@ -1,16 +1,19 @@
 """Build messaging campaigns"""
 import csv
 import enum
+import random
+import time
 from dataclasses import dataclass
-from typing import List
+from typing import List, Optional
 
 import typer
-from dataclass_csv import DataclassWriter
+from dataclass_csv import DataclassReader, DataclassWriter
 from mako.template import Template
 
 from socializer.cli.utils import _is_arabic
 from socializer.google_contacts import GoogleContactsAdapter
 from socializer.models import Contact
+from socializer.whatsapp_manager import WhatsAppManager
 
 app = typer.Typer(name="campaign", help=__doc__)
 
@@ -102,3 +105,42 @@ def generate_messages(
     writer = DataclassWriter(output, messages, Message)
     writer.write()
     typer.echo(f"messages written to {output.name}")
+
+
+class SendMode(str, enum.Enum):
+    LIVE = "live"
+    TEST = "test"
+
+
+@app.command()
+def send_whatsapp_messages(
+    messages_csv: typer.FileText = typer.Option(
+        "messages.csv", "--messages-file", "-m"
+    ),
+    mode: SendMode = SendMode.TEST,
+    test_phone_num: Optional[str] = typer.Option(
+        None,
+        "--test-phone-num",
+        "-p",
+        help="A phone number to send messages to when mode is 'test'",
+    ),
+):
+    """Send messages using whatsapp"""
+    if mode == SendMode.TEST and test_phone_num is None:
+        typer.echo(
+            "A test phone number is required when using 'test' mode. Aborting!",
+            err=True,
+        )
+        raise typer.Exit(code=1)
+
+    whats_manager = WhatsAppManager()
+
+    reader = DataclassReader(messages_csv, Message)
+    messages: List[Message] = list(reader)
+    with typer.progressbar(
+        messages, label=f"Sending {len(messages)} messages"
+    ) as progress:
+        for message in progress:
+            destination = message.phone_num if mode == SendMode.LIVE else test_phone_num
+            whats_manager.sendwhatmsg(phone_no=destination, message=message.message)
+            time.sleep(random.randint(3, 7))
