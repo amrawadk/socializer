@@ -1,3 +1,4 @@
+"""Automation first approach to building and maintaing personal networks."""
 from typing import List
 
 import typer
@@ -10,11 +11,10 @@ from socializer.google_contacts.manager import GoogleContactsManager
 from socializer.google_contacts.models import GooglePerson
 from socializer.models import Contact, Gender
 
-app = typer.Typer()
-gmanager = GoogleContactsManager()
+app = typer.Typer(name="socializer", help=__doc__)
 
 
-def _fix_missing_genders(people: List[GooglePerson]):
+def _fix_missing_genders(gmanager: GoogleContactsManager, people: List[GooglePerson]):
     classifier = GenderClassifier()
     for person in people:
         result = classifier.classify(name=person.given_name)
@@ -39,7 +39,7 @@ def _fix_missing_genders(people: List[GooglePerson]):
         )
 
 
-def _check_missing_gender(people: List[GooglePerson]):
+def _check_missing_gender(gmanager: GoogleContactsManager, people: List[GooglePerson]):
     missing_gender = [c for c in people if c.gender is None]
     if missing_gender:
         questions = [
@@ -52,7 +52,7 @@ def _check_missing_gender(people: List[GooglePerson]):
         ]
         answers = prompt(questions)
         if answers["fix_missing_gender"]:
-            _fix_missing_genders(people=missing_gender)
+            _fix_missing_genders(gmanager=gmanager, people=missing_gender)
     else:
         typer.echo("All people have gender set!")
 
@@ -60,13 +60,14 @@ def _check_missing_gender(people: List[GooglePerson]):
 @app.command()
 def analyze_group(name: str = typer.Option(...), limit: int = 20):
     """Analyze Google Contacts Group and optionally add any missing data."""
+    gmanager = GoogleContactsManager()
     typer.echo(f"Analyzing contact group: {name} ...")
 
     people = gmanager.get_people_in_group(group_name=name, limit=limit)
 
     typer.echo(f"Found {len(people)} people in the group")
 
-    _check_missing_gender(people=people)
+    _check_missing_gender(gmanager=gmanager, people=people)
 
 
 @app.command()
@@ -95,6 +96,8 @@ def export_people(
     """Export People in a google contact group to a csv file.
 
     This includes more details than Contact"""
+    gmanager = GoogleContactsManager()
+
     people = gmanager.get_people_in_group(group_name=group_name, limit=limit)
 
     writer = DataclassWriter(output, people, GooglePerson)

@@ -2,7 +2,11 @@
 name = "socializer"
 version = "0.1.0"
 description = ""
-authors = ["Amr Awad"]
+authors = ["Amr Awad <amro.khir@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.scripts]
+socializer = "socializer.cli.main:app"
 
 [tool.poetry.dependencies]
 python = "^3.9"
@@ -13,7 +17,7 @@ google-auth-oauthlib = "^0.4.4"
 dataclass-csv = "^1.3.0"
 requests-cache = "^0.6.3"
 Mako = "^1.1.4"
-typer = "^0.3.2"
+typer = {extras = ["all"], version = "^0.3.2"}
 PyInquirer = "^1.0.3"
 
 [tool.poetry.dev-dependencies]
@@ -26,6 +30,7 @@ pylint = "^2.8.2"
 mkdocs = "^1.1.2"
 mkdocs-material = "^7.1.4"
 mkdocs-mermaid2-plugin = "^0.5.1"
+typer-cli = "^0.0.11"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

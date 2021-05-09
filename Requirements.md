@@ -21,3 +21,11 @@
     - set gender
     - set language
     - ...
+
+# Product Ideas
+- API for name translations
+- API for gender identification for arabic names
+
+# Project Names
+- Egtma3y: The full product suite
+    - Should be pay per usage, aim for serverless architecture.
