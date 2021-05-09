@@ -59,6 +59,20 @@ def _check_missing_gender(gmanager: GoogleContactsManager, people: List[GooglePe
         typer.echo("All people have gender set!")
 
 
+def _is_arabic(name: str) -> bool:
+    return all((c in araby.LETTERS for c in name.replace(" ", "")))
+
+
+def _check_arabic_names(people: List[GooglePerson]):
+    non_arabic = [c for c in people if not _is_arabic(name=c.given_name)]
+    if non_arabic:
+        typer.echo(
+            f"Found {len(non_arabic)}/{len(people)} people with non arabic names!"
+        )
+    else:
+        typer.echo("All people have arabic names!")
+
+
 @app.command()
 def analyze_group(name: str = typer.Option(...), limit: int = 20):
     """Analyze Google Contacts Group and optionally add any missing data."""
@@ -70,6 +84,7 @@ def analyze_group(name: str = typer.Option(...), limit: int = 20):
     typer.echo(f"Found {len(people)} people in the group")
 
     _check_missing_gender(gmanager=gmanager, people=people)
+    _check_arabic_names(people=people)
 
 
 @app.command()
@@ -126,10 +141,7 @@ def _filter_required_fields(
 
 
 def _filter_arabic_only_contacts(contacts: List[Contact]) -> List[Contact]:
-    pyarabic_check = lambda name: all((c in araby.LETTERS for c in name))
-    filtered_contacts = [
-        c for c in contacts if pyarabic_check(c.first_name.replace(" ", ""))
-    ]
+    filtered_contacts = [c for c in contacts if _is_arabic(name=c.first_name)]
     typer.echo(
         f"{len(filtered_contacts)}/{len(contacts)} contacts matched the filter: 'arabic-only'"
     )
