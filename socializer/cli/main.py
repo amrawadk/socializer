@@ -2,6 +2,7 @@
 import enum
 from typing import List
 
+import pyarabic.araby as araby
 import typer
 from dataclass_csv import DataclassWriter
 from PyInquirer import prompt
@@ -111,12 +112,37 @@ class FieldFilters(enum.Enum):
     GENDER = "gender"
 
 
+def _filter_required_fields(
+    contacts: List[Contact], fields: List[FieldFilters]
+) -> List[Contact]:
+    filtered_contacts = [
+        c for c in contacts if all((getattr(c, f.value) for f in fields))
+    ]
+    fields_str = [f.value for f in fields]
+    typer.echo(
+        f"{len(filtered_contacts)}/{len(contacts)} contacts matched the filters: '{' & '.join(fields_str)}'"
+    )
+    return filtered_contacts
+
+
+def _filter_arabic_only_contacts(contacts: List[Contact]) -> List[Contact]:
+    pyarabic_check = lambda name: all((c in araby.LETTERS for c in name))
+    filtered_contacts = [
+        c for c in contacts if pyarabic_check(c.first_name.replace(" ", ""))
+    ]
+    typer.echo(
+        f"{len(filtered_contacts)}/{len(contacts)} contacts matched the filter: 'arabic-only'"
+    )
+    return filtered_contacts
+
+
 @app.command()
 def generate_audience(
     group_name: str = typer.Option(...),
     fields: List[FieldFilters] = typer.Option(
         [], "--field", "-f", help="A required field that the audience should have"
     ),
+    arabic_only: bool = typer.Option(False, "--arabic-only"),
     output: typer.FileTextWrite = typer.Option("contacts.csv"),
     limit: int = 20,
 ):
@@ -128,13 +154,11 @@ def generate_audience(
 
     typer.echo(f"Found {len(contacts)} people in the group")
 
-    filtered_contacts = [
-        c for c in contacts if all((getattr(c, f.value) for f in fields))
-    ]
-    fields_str = [f.value for f in fields]
-    typer.echo(
-        f"{len(filtered_contacts)} contacts matched the filters: '{' & '.join(fields_str)}'"
-    )
+    if fields:
+        contacts = _filter_required_fields(contacts=contacts, fields=fields)
+
+    if arabic_only:
+        contacts = _filter_arabic_only_contacts(contacts=contacts)
 
     writer = DataclassWriter(output, contacts, Contact)
     writer.write()
