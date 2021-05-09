@@ -1,9 +1,12 @@
 """Build messaging campaigns"""
+import csv
 import enum
+from dataclasses import dataclass
 from typing import List
 
 import typer
 from dataclass_csv import DataclassWriter
+from mako.template import Template
 
 from socializer.cli.utils import _is_arabic
 from socializer.google_contacts import GoogleContactsAdapter
@@ -65,3 +68,37 @@ def generate_audience(
     writer = DataclassWriter(output, contacts, Contact)
     writer.write()
     typer.echo(f"contacts written to {output.name}")
+
+
+## Message Generation
+
+
+@dataclass
+class Message:
+    full_name: str
+    phone_num: str
+    message: str
+
+
+@app.command()
+def generate_messages(
+    contacts: typer.FileText = typer.Option("contacts.csv", "--contacts", "-c"),
+    template_file: typer.FileText = typer.Option("template.txt", "--template", "-t"),
+    output: typer.FileTextWrite = typer.Option("messages.csv"),
+):
+    """Generate Message for a list of contacts based on a template"""
+    template = Template(filename=template_file.name)
+
+    reader = csv.DictReader(contacts)
+    messages = [
+        Message(
+            full_name=contact["full_name"],
+            phone_num=contact["phone_num"],
+            message=template.render(**contact),
+        )
+        for contact in reader
+    ]
+
+    writer = DataclassWriter(output, messages, Message)
+    writer.write()
+    typer.echo(f"messages written to {output.name}")
