@@ -11,9 +11,17 @@
 - [ ] Start Collect data from linkedin connections
 - [ ] Workaround the 50 resource per request limit for groups
 
+## Caviets
+- On Mac, you need to allow `chromedriver` to execute without a certification, using the command:
+```bash
+xattr -d com.apple.quarantine $(which chromedriver)
+```
 ## Improvements
-- [ ] use tqdm for nicer progress bars
-- [ ] replace `typer.echo` with structlog
+- [ ] Document cli using https://github.com/click-contrib/sphinx-click
+- [ ] Use Configuration files for messaging campaigns
+- [ ] Generate release notes
+- [ ] Replace `type.echo` more structured logs: https://github.com/hynek/structlog
+- [ ] use `tqdm` for nicer progress bars
 ## Organization
 - Figure out how to preview messages for people while writing templates.
 - Figure out how to perform updates on `Contact` and have other systems pick them up
