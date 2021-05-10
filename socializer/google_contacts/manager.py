@@ -1,5 +1,5 @@
 import os.path
-from typing import List, Optional
+from typing import Any, Iterable, List, Optional
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -63,17 +63,25 @@ class GoogleContactsManager:
         # TODO: is this ever empty?
         member_resource_names = response["memberResourceNames"]
 
-        response = (
-            self.service.people()
-            .getBatchGet(
-                resourceNames=member_resource_names,
-                personFields="names,phoneNumbers,genders",
-            )
-            .execute()
-        )
+        people: List[GooglePerson] = []
 
-        responses = response.get("responses")
-        return [GooglePerson(body=response["person"]) for response in responses]
+        # TODO figure out a better place for this variable
+        resource_name_limit = 50
+        for chunk in self._chunk(member_resource_names, resource_name_limit):
+            response = (
+                self.service.people()
+                .getBatchGet(
+                    resourceNames=chunk, personFields="names,phoneNumbers,genders",
+                )
+                .execute()
+            )
+
+            responses = response.get("responses")
+            people.extend(
+                [GooglePerson(body=response["person"]) for response in responses]
+            )
+
+        return people
 
     def update_gender(
         self, resource_name: str, etag: str, gender: Optional[Gender]
@@ -116,3 +124,8 @@ class GoogleContactsManager:
                 token.write(creds.to_json())
 
         return creds
+
+    @staticmethod
+    def _chunk(list_name: List[Any], size: int) -> Iterable[List[Any]]:
+        for i in range(0, len(list_name), size):
+            yield list_name[i : i + size]

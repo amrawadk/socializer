@@ -9,7 +9,12 @@
 - [x] Preview messages with auto updates (use `watch`)
 - [ ] figure out how to add religion to profiles and auto fill it (similar to gender)
 - [ ] Start Collect data from linkedin connections
-- [ ] Workaround the 50 resource per request limit for groups
+- [x] Workaround the 50 resource per request limit for groups
+- [ ] Figure out how to run the following scripts before each build
+    - scripts/generate_markdown_tables.sh
+    - all python scripts in `docs_src`
+- [ ] figure out why messages are over new lines in `messages.md`
+- [ ] remove table-renderer config
 
 ## Caviets
 - On Mac, you need to allow `chromedriver` to execute without a certification, using the command:
@@ -22,6 +27,8 @@ xattr -d com.apple.quarantine $(which chromedriver)
 - [ ] Generate release notes
 - [ ] Replace `type.echo` more structured logs: https://github.com/hynek/structlog
 - [ ] use `tqdm` for nicer progress bars
+
+
 ## Organization
 - Figure out how to preview messages for people while writing templates.
 - Figure out how to perform updates on `Contact` and have other systems pick them up
@@ -42,3 +49,16 @@ xattr -d com.apple.quarantine $(which chromedriver)
 # Project Names
 - Egtma3y: The full product suite
     - Should be pay per usage, aim for serverless architecture.
+
+# Interesting mkdocs integrations
+- [ ] Inject social media cards: https://github.com/carlosperate/mkdocs-awesome-list-plugin/blob/master/README.md
+- [ ] Resolve links to issue trackers: https://github.com/theskumar/autolink-references-mkdocs-plugin/
+- [ ] URL Validator: https://github.com/manuzhang/mkdocs-htmlproofer-plugin
+- [ ] Add rich tooltips: https://github.com/midnightprioriem/mkdocs-tooltipster-links-plugin/blob/master/README.md
+- [ ] Add plantuml diagrams: https://github.com/christo-ph/mkdocs_build_plantuml/blob/master/README.md
+- [ ] Add test coverage: https://pawamoy.github.io/mkdocs-coverage/
+- [ ] Highlight new features: https://github.com/kevin-411/mkdocs-new-features-notifier/blob/master/README.md
+- [ ] Create mind maps: https://github.com/neatc0der/mkdocs-markmap
+- [ ] generate documentation dynamically: https://oprypin.github.io/mkdocs-gen-files/
+- [ ] Critic Markup, tracking changes to markdown: http://criticmarkup.com/
+- [ ] Architecture decision records: https://github.com/npryce/adr-tools

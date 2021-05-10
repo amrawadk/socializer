@@ -90,7 +90,7 @@ $ socializer campaign generate-messages [OPTIONS]
 
 * `-c, --contacts FILENAME`: [default: contacts.csv]
 * `-t, --template FILENAME`: [default: template.txt]
-* `--output FILENAME`: [default: messages.csv]
+* `-o, --output FILENAME`: [default: messages.csv]
 * `--help`: Show this message and exit.
 
 ### `socializer campaign send-whatsapp-messages`

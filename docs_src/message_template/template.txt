@@ -1,0 +1,4 @@
+<%
+    name = " ".join([prefix, first_name])
+%>
+Al Salamu Alikum, ${name}, Happy Eid!

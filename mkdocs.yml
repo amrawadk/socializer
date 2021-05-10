@@ -2,20 +2,31 @@ site_name: Socializer
 
 theme:
     name: 'material'
-    palette:
-        primary: 'black'
-        accent: 'teal'
-    icon:
-        repo: fontawesome/brands/github-alt
     # TODO add logo
-    logo: 'img/icon-white.svg'
-    favicon: 'img/favicon.png'
+    # logo: 'img/icon-white.svg'
+    # favicon: 'img/favicon.png'
 
 nav:
     - Socializer: 'index.md'
-    - Road Map: 'roadmap.md'
+    - How it works: 'how-it-works.md'
     - Cli Reference: 'cli.md'
+    - Road Map: 'roadmap.md'
 
 plugins:
     - search
     - mermaid2
+    - mkdocstrings:
+        watch:
+            - socializer/
+    - table-reader
+
+markdown_extensions:
+    - toc:
+        permalink: true
+    - admonition
+    - pymdownx.highlight
+    - pymdownx.superfences
+    - pymdownx.snippets:
+        check_paths: true
+    - pymdownx.tabbed
+    - pymdownx.details

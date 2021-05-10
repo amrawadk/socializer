@@ -22,6 +22,16 @@ class Gender(Enum, metaclass=MyEnumMeta):
 
 @dataclass
 class Contact:
+    """Class for storing contact details.
+
+    Attributes:
+        full_name: the contact's full name, including both prefix and last names
+        first_name: the contact's first name
+        phone_num: This is used for whatsapp messaging
+        prefix: An optional prefix or title, like `Dr.` or `Aunt`
+        gender: the contact's gender
+    """
+
     full_name: str
     first_name: str
     phone_num: str

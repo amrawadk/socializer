@@ -87,7 +87,7 @@ class Message:
 def generate_messages(
     contacts: typer.FileText = typer.Option("contacts.csv", "--contacts", "-c"),
     template_file: typer.FileText = typer.Option("template.txt", "--template", "-t"),
-    output: typer.FileTextWrite = typer.Option("messages.csv"),
+    output: typer.FileTextWrite = typer.Option("messages.csv", "--output", "-o"),
 ):
     """Generate Message for a list of contacts based on a template"""
     template = Template(filename=template_file.name)
