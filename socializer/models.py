@@ -29,6 +29,7 @@ class Contact:
         first_name: the contact's first name
         phone_num: This is used for whatsapp messaging
         prefix: An optional prefix or title, like `Dr.` or `Aunt`
+        nickname: An optional nickname
         gender: the contact's gender
     """
 
@@ -36,4 +37,5 @@ class Contact:
     first_name: str
     phone_num: str
     prefix: Optional[str] = None
+    nickname: Optional[str] = None
     gender: Optional[Gender] = None

@@ -6,7 +6,12 @@
         pronoun = "انتِ" if gender == "Gender.FEMALE" else "انت"
 
     tayeb = "طيبة" if gender == "Gender.FEMALE" else "طيب"
-    name = (prefix + " " + first_name) if prefix else first_name
-    emoji = "❤️" if prefix or gender != "Gender.FEMALE" else "😀"
+
+    if prefix:
+        name = prefix + " " + first_name
+    else:
+        name = nickname if nickname else first_name
+
+    emoji = "😀"
 %>
 كل سنه و ${pronoun} ${tayeb} يا ${name} ${emoji} عيد سعيد عليكم جميعا 😀

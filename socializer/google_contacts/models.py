@@ -25,6 +25,7 @@ class GooglePerson:
     phone_num: str
     body: dict
     gender: Optional[Gender] = None
+    nickname: Optional[str] = None
 
     def __init__(self, body: dict) -> None:
         self.body = body
@@ -32,6 +33,7 @@ class GooglePerson:
         self.prefix = self._get_prefix()
         self.given_name = self._get_given_name()
         self.phone_num = self._get_phone_num()
+        self.nickname = self._get_nickname()
         self.resource_name = self.body["resourceName"]
         self.etag = self.body["etag"]
         self.gender = self._get_gender()
@@ -47,6 +49,12 @@ class GooglePerson:
 
     def _get_phone_num(self) -> str:
         return self.body["phoneNumbers"][0]["canonicalForm"]
+
+    def _get_nickname(self) -> Optional[str]:
+        nickname = None
+        if self.body.get("nicknames"):
+            nickname = self.body["nicknames"][0]["value"]
+        return nickname
 
     def _get_name_dict(self) -> dict[str, str]:
         if len(self.body["names"]) > 1:
@@ -69,4 +77,5 @@ class GooglePerson:
             first_name=self.given_name,
             phone_num=self.phone_num,
             gender=self.gender,
+            nickname=self.nickname,
         )

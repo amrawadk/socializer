@@ -71,7 +71,8 @@ class GoogleContactsManager:
             response = (
                 self.service.people()
                 .getBatchGet(
-                    resourceNames=chunk, personFields="names,phoneNumbers,genders",
+                    resourceNames=chunk,
+                    personFields="names,nicknames,phoneNumbers,genders",
                 )
                 .execute()
             )
