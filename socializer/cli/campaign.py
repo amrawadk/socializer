@@ -46,7 +46,7 @@ def _filter_arabic_only_contacts(contacts: List[Contact]) -> List[Contact]:
 
 @app.command()
 def generate_audience(
-    group_name: str = typer.Option(...),
+    group_names: List[str] = typer.Option([], "--group-name", "-n"),
     fields: List[FieldFilters] = typer.Option(
         [], "--field", "-f", help="A required field that the audience should have"
     ),
@@ -56,19 +56,24 @@ def generate_audience(
 ):
     """Export Audience filtered by certain conditions to a csv file."""
     gcontacts_manager = GoogleContactsAdapter()
-    contacts = gcontacts_manager.get_contacts_in_group(
-        group_name=group_name, limit=limit
-    )
 
-    typer.echo(f"Found {len(contacts)} people in the group")
+    all_contacts: List[Contact] = []
+    for group_name in group_names:
+        contacts = gcontacts_manager.get_contacts_in_group(
+            group_name=group_name, limit=limit
+        )
 
-    if fields:
-        contacts = _filter_required_fields(contacts=contacts, fields=fields)
+        typer.echo(f"Found {len(contacts)} people in the group")
 
-    if arabic_only:
-        contacts = _filter_arabic_only_contacts(contacts=contacts)
+        if fields:
+            contacts = _filter_required_fields(contacts=contacts, fields=fields)
 
-    writer = DataclassWriter(output, contacts, Contact)
+        if arabic_only:
+            contacts = _filter_arabic_only_contacts(contacts=contacts)
+
+        all_contacts.extend(contacts)
+
+    writer = DataclassWriter(output, all_contacts, Contact)
     writer.write()
     typer.echo(f"contacts written to {output.name}")
 
