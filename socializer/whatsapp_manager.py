@@ -9,7 +9,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 
 class WhatsAppManager:
-    PAGE_LOAD_TIMEOUT_SECONDS = 100
+    PAGE_LOAD_TIMEOUT_SECONDS = 10
 
     def __init__(self):
         options = Options()
