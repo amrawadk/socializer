@@ -28,24 +28,27 @@ def _fix_missing_genders(gmanager: GoogleContactsManager, people: List[GooglePer
             gender=result.gender,
             probability=result.probability,
         )
-        questions = [
-            {
-                "type": "expand",
-                "message": message,
-                "name": "gender",
-                "default": "a",
-                "choices": [
-                    {"key": "a", "name": "Accept", "value": result.gender},
-                    {"key": "m", "name": "Override to Male", "value": "male",},
-                    {"key": "f", "name": "Override to Female", "value": "female"},
-                ],
-            }
-        ]
-        answers = prompt(questions)
+        if result.probability > 90:
+            typer.echo(message + "Accepting!")
+            gender = Gender(result.gender)
+        else:
+            questions = [
+                {
+                    "type": "expand",
+                    "message": message,
+                    "name": "gender",
+                    "default": "a",
+                    "choices": [
+                        {"key": "a", "name": "Accept", "value": result.gender},
+                        {"key": "m", "name": "Override to Male", "value": "male",},
+                        {"key": "f", "name": "Override to Female", "value": "female"},
+                    ],
+                }
+            ]
+            answers = prompt(questions)
+            gender = Gender(answers["gender"])
         gmanager.update_gender(
-            resource_name=person.resource_name,
-            etag=person.etag,
-            gender=Gender(answers["gender"]),
+            resource_name=person.resource_name, etag=person.etag, gender=gender,
         )
 
 
