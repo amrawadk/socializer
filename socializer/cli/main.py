@@ -81,17 +81,21 @@ def _check_arabic_names(people: List[GooglePerson]):
 
 
 @app.command()
-def analyze_group(name: str = typer.Option(...), limit: int = 20):
+def analyze_group(
+    group_names: List[str] = typer.Option([], "--group-name", "-n"), limit: int = 20
+):
     """Analyze Google Contacts Group and optionally add any missing data."""
     gmanager = GoogleContactsManager()
-    typer.echo(f"Analyzing contact group: {name} ...")
 
-    people = gmanager.get_people_in_group(group_name=name, limit=limit)
+    for group_name in group_names:
+        typer.echo(f"Analyzing contact group: {group_name} ...")
 
-    typer.echo(f"Found {len(people)} people in the group")
+        people = gmanager.get_people_in_group(group_name=group_name, limit=limit)
 
-    _check_missing_gender(gmanager=gmanager, people=people)
-    _check_arabic_names(people=people)
+        typer.echo(f"Found {len(people)} people in the group")
+
+        _check_missing_gender(gmanager=gmanager, people=people)
+        _check_arabic_names(people=people)
 
 
 @app.command()
