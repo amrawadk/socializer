@@ -114,9 +114,7 @@ class SendMode(str, enum.Enum):
 
 @app.command()
 def send_whatsapp_messages(
-    messages_csv: typer.FileText = typer.Option(
-        "messages.csv", "--messages-file", "-m"
-    ),
+    messages_csv: typer.FileText = typer.Option("messages.csv", "--messages", "-m"),
     mode: SendMode = SendMode.TEST,
     test_phone_num: Optional[str] = typer.Option(
         None,
@@ -137,10 +135,19 @@ def send_whatsapp_messages(
 
     reader = DataclassReader(messages_csv, Message)
     messages: List[Message] = list(reader)
+    not_sent: List[Message] = []
     with typer.progressbar(
         messages, label=f"Sending {len(messages)} messages"
     ) as progress:
         for message in progress:
             destination = message.phone_num if mode == SendMode.LIVE else test_phone_num
-            whats_manager.sendwhatmsg(phone_no=destination, message=message.message)
+            try:
+                whats_manager.sendwhatmsg(phone_no=destination, message=message.message)
+            except Exception:  # pylint: disable=broad-except
+                not_sent.append(message)
             time.sleep(random.randint(3, 7))
+
+    with open("failed_messages.csv", "w") as failed_messages_csv:
+        writer = DataclassWriter(failed_messages_csv, not_sent, Message)
+        writer.write()
+        typer.echo("failed messages written to failed_messages.csv")
