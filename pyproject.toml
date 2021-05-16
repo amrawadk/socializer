@@ -34,7 +34,6 @@ mkdocs-mermaid2-plugin = "^0.5.1"
 typer-cli = "^0.0.11"
 mkdocstrings = "^0.15.0"
 Pygments = "^2.9.0"
-mkdocs-table-reader-plugin = "^0.5"
 csvtomd = "^0.3.0"
 
 [build-system]

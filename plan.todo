@@ -1,0 +1,67 @@
+# notion page: https://www.notion.so/amrawad/Build-a-personal-CRM-8957df7c89a14fb59e05fcca25177041
+
+Validation:
+    - validate phone numbers
+        - some are missing '+2', this can be an optional checker for 'country code'
+        - some contacts have multiple numbers, we should keep trying till we get a match
+
+Features:
+    - Add a new field: Religion
+    - Add a new field: Communication Language
+    - Add a new field: avatar url (from whatsapp, linkedin and facebook)
+    - Add a new field: company and title (from linkedin)
+    - Add a new `init` subcommand to set up google access / `chromedriver`
+        - update the docs accordingly
+    - Add a new `doctor` subcommand to check that the command is set up correctly
+        inspired by `flutter doctor`.
+        - update the docs accordingly.
+
+CI/CD:
+    - Host Project on Github
+    - Publish CLI to pypi
+    - Automate testing and release: https://dev.to/jidicula/python-ci-cd-with-github-actions-2e26
+
+Publishing Project:
+    - Record video with walkthrough and publish on linkedin in ar & en
+    - Purchase personal domain and hist project docs
+        - Check [tianglo.com](http://tianglo.com) for reference
+
+Documentation:
+    - Checklist for adding new fields
+        - How to check?
+        - How to suggest / autofill
+        - How to persist updates?
+    - Figure out how to run the following scripts before each build
+        - scripts/generate_markdown_tables.sh
+        - all python scripts in `docs_src`
+    - figure out why messages are over new lines in `messages.md`
+    - Recreate the domain design in PlantUML
+        - integrate it into docs using plantuml diagrams: https://github.com/christo-ph/mkdocs_build_plantuml
+    - Document cli using https://github.com/click-contrib/sphinx-click
+    - Inject social media cards: https://github.com/carlosperate/mkdocs-awesome-list-plugin/blob/master/README.md
+    - Resolve links to issue trackers: https://github.com/theskumar/autolink-references-mkdocs-plugin/
+    - URL Validator: https://github.com/manuzhang/mkdocs-htmlproofer-plugin
+    - Add rich tooltips: https://github.com/midnightprioriem/mkdocs-tooltipster-links-plugin/blob/master/README.md
+    - Add test coverage to documentation: https://pawamoy.github.io/mkdocs-coverage/
+    - Highlight new features: https://github.com/kevin-411/mkdocs-new-features-notifier/blob/master/README.md
+    - Create mind maps: https://github.com/neatc0der/mkdocs-markmap
+    - generate documentation dynamically: https://oprypin.github.io/mkdocs-gen-files/
+    - Critic Markup, tracking changes to markdown: http://criticmarkup.com/
+    - Architecture decision records: https://github.com/npryce/adr-tools
+    - Check if site supports arabic docs
+
+Architecture:
+    - Make the system more extensible / testable using an event-driven architecture
+    - Turn all get / update logic to be through properties
+        will possibly make the code easier to read
+    - Replace direct API calls with repositories
+
+Integrations:
+    - replace selinium with a browser extension, here's an example: https://chrome.google.com/webstore/detail/intouch-linkedin-auto-con/fngoamlbhhojhodbgoeknadgabgjpgmg?hl=en
+    - Competitor for linkedin integration: https://www.prospectin.fr/
+
+
+Usability:
+    - Replace `type.echo` more structured logs: https://github.com/hynek/structlog
+    - use `tqdm` for nicer progress bars
+    - Use Configuration files for messaging campaigns
