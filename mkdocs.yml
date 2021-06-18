@@ -18,7 +18,6 @@ plugins:
     - mkdocstrings:
         watch:
             - socializer/
-    - table-reader
 
 markdown_extensions:
     - toc:

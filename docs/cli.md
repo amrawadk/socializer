@@ -33,7 +33,7 @@ $ socializer analyze-group [OPTIONS]
 
 **Options**:
 
-* `--name TEXT`: [required]
+* `-n, --group-name TEXT`: [default: ]
 * `--limit INTEGER`: [default: 20]
 * `--help`: Show this message and exit.
 
@@ -69,7 +69,7 @@ $ socializer campaign generate-audience [OPTIONS]
 
 **Options**:
 
-* `--group-name TEXT`: [required]
+* `-n, --group-name TEXT`: [default: ]
 * `-f, --field [gender]`: A required field that the audience should have  [default: ]
 * `--arabic-only`: [default: False]
 * `--output FILENAME`: [default: contacts.csv]
@@ -105,7 +105,7 @@ $ socializer campaign send-whatsapp-messages [OPTIONS]
 
 **Options**:
 
-* `-m, --messages-file FILENAME`: [default: messages.csv]
+* `-m, --messages FILENAME`: [default: messages.csv]
 * `--mode [live|test]`: [default: test]
 * `-p, --test-phone-num TEXT`: A phone number to send messages to when mode is 'test'
 * `--help`: Show this message and exit.
