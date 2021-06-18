@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Optional
+from typing import Dict, Optional
 
 from socializer.google_contacts.errors import (
     GooglePersonHasMoreThanOneName,
@@ -56,7 +56,7 @@ class GooglePerson:
             nickname = self.body["nicknames"][0]["value"]
         return nickname
 
-    def _get_name_dict(self) -> dict[str, str]:
+    def _get_name_dict(self) -> Dict[str, str]:
         if len(self.body["names"]) > 1:
             raise GooglePersonHasMoreThanOneName(person=self)
         if len(self.body["names"]) == 0:
