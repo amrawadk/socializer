@@ -6,12 +6,12 @@ from dataclass_csv import DataclassWriter
 from PyInquirer import prompt
 
 from socializer.cli.campaign import app as campaign_app
-from socializer.cli.utils import _is_arabic
 from socializer.data_augmentation import GenderClassifier
 from socializer.google_contacts import GoogleContactsAdapter
 from socializer.google_contacts.manager import GoogleContactsManager
 from socializer.google_contacts.models import GooglePerson
 from socializer.models import Contact, Gender
+from socializer.services import _is_arabic
 
 app = typer.Typer(name="socializer", help=__doc__)
 app.add_typer(campaign_app)

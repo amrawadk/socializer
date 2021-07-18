@@ -42,7 +42,8 @@ class Contact:
     gender: Optional[Gender] = None
 
 
-class FieldFilters(enum.Enum):
-    """Fields that we can filter contacts based on."""
+class ContactFilters(enum.Enum):
+    """Supported ways to filter contacts"""
 
-    GENDER = "gender"
+    GENDER_EXISTS = "gender"
+    ARABIC_NAME = "arabic"

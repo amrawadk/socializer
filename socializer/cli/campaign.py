@@ -11,7 +11,7 @@ from dataclass_csv import DataclassReader, DataclassWriter
 from mako.template import Template
 
 from socializer import services
-from socializer.models import Contact, FieldFilters
+from socializer.models import Contact, ContactFilters
 from socializer.whatsapp_manager import WhatsAppManager
 
 app = typer.Typer(name="campaign", help=__doc__)
@@ -20,16 +20,15 @@ app = typer.Typer(name="campaign", help=__doc__)
 @app.command()
 def generate_audience(
     group_names: List[str] = typer.Option([], "--group-name", "-n"),
-    fields: List[FieldFilters] = typer.Option(
-        [], "--field", "-f", help="A required field that the audience should have"
+    filters: List[ContactFilters] = typer.Option(
+        [], "--filters", "-f", help=ContactFilters.__doc__
     ),
-    arabic_only: bool = typer.Option(False, "--arabic-only"),
     output: typer.FileTextWrite = typer.Option("contacts.csv"),
     limit: int = 20,
 ):
     """Export Audience filtered by certain conditions to a csv file."""
     all_contacts = services.generate_audience(
-        group_names=group_names, fields=fields, arabic_only=arabic_only, limit=limit
+        group_names=group_names, filters=filters, limit=limit
     )
 
     writer = DataclassWriter(output, all_contacts, Contact)
