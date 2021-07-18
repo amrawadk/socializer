@@ -1,3 +1,4 @@
+import enum
 from dataclasses import dataclass
 from enum import Enum, EnumMeta
 from typing import Optional
@@ -39,3 +40,9 @@ class Contact:
     prefix: Optional[str] = None
     nickname: Optional[str] = None
     gender: Optional[Gender] = None
+
+
+class FieldFilters(enum.Enum):
+    """Fields that we can filter contacts based on."""
+
+    GENDER = "gender"
