@@ -40,7 +40,7 @@ Documentation:
     - Document cli using https://github.com/click-contrib/sphinx-click
     - Inject social media cards: https://github.com/carlosperate/mkdocs-awesome-list-plugin/blob/master/README.md
     - Resolve links to issue trackers: https://github.com/theskumar/autolink-references-mkdocs-plugin/
-    - URL Validator: https://github.com/manuzhang/mkdocs-htmlproofer-plugin
+    - URL Validator: https://github.com/manuzhang/mkdocs-htmlpro§ofer-plugin
     - Add rich tooltips: https://github.com/midnightprioriem/mkdocs-tooltipster-links-plugin/blob/master/README.md
     - Add test coverage to documentation: https://pawamoy.github.io/mkdocs-coverage/
     - Highlight new features: https://github.com/kevin-411/mkdocs-new-features-notifier/blob/master/README.md

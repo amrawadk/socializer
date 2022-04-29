@@ -2,9 +2,10 @@
 from typing import Callable, Dict, List
 
 import pyarabic.araby as araby
+from mako.template import Template
 
 from socializer.google_contacts import GoogleContactsAdapter
-from socializer.models import Contact, ContactFilters
+from socializer.models import Contact, ContactFilters, Message
 
 
 def _is_arabic(name: str) -> bool:
@@ -34,7 +35,7 @@ def filter_contacts(
     return contacts
 
 
-def generate_audience(
+def get_contacts(
     group_names: List[str], filters: List[ContactFilters], limit: int = 20,
 ) -> List[Contact]:
     gcontacts_manager = GoogleContactsAdapter()
@@ -52,3 +53,11 @@ def generate_audience(
         all_contacts.extend(contacts)
 
     return all_contacts
+
+
+def create_message(contact: Contact, template: Template) -> Message:
+    return Message(
+        full_name=contact.full_name,
+        phone_num=contact.phone_num,
+        body=template.render(**contact.__dict__),
+    )

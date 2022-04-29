@@ -1,0 +1,22 @@
+global:
+  template: template.txt
+  filters:
+    - arabic_only
+  group_limit: 100
+campaigns:
+#  - group: Family
+#    template: family_template.txt
+#  - group: Close Family
+#    template: close_template.txt
+#  - group: Elementary School
+#  - group: College
+  - group: Father's Friends
+  - group: Friends
+  - group: High School
+  - group: High School Teachers
+  - group: Masters
+  - group: Neighbours
+  - group: Resala
+  - group: Tempo
+  - group: Valeo
+  - group: Khamayl Security

@@ -3,7 +3,6 @@ import csv
 import enum
 import random
 import time
-from dataclasses import dataclass
 from typing import List, Optional
 
 import typer
@@ -11,7 +10,7 @@ from dataclass_csv import DataclassReader, DataclassWriter
 from mako.template import Template
 
 from socializer import services
-from socializer.models import Contact, ContactFilters
+from socializer.models import Contact, ContactFilters, Message
 from socializer.whatsapp_manager import WhatsAppManager
 
 app = typer.Typer(name="campaign", help=__doc__)
@@ -27,7 +26,7 @@ def generate_audience(
     limit: int = 20,
 ):
     """Export Audience filtered by certain conditions to a csv file."""
-    all_contacts = services.generate_audience(
+    all_contacts = services.get_contacts(
         group_names=group_names, filters=filters, limit=limit
     )
 
@@ -39,13 +38,6 @@ def generate_audience(
 ## Message Generation
 
 
-@dataclass
-class Message:
-    full_name: str
-    phone_num: str
-    message: str
-
-
 @app.command()
 def generate_messages(
     contacts: typer.FileText = typer.Option("contacts.csv", "--contacts", "-c"),
@@ -55,12 +47,13 @@ def generate_messages(
     """Generate Message for a list of contacts based on a template"""
     template = Template(filename=template_file.name)
 
+    # TODO fix this, this should use the services
     reader = csv.DictReader(contacts)
     messages = [
         Message(
             full_name=contact["full_name"],
             phone_num=contact["phone_num"],
-            message=template.render(**contact),
+            body=template.render(**contact),
         )
         for contact in reader
     ]
@@ -105,7 +98,7 @@ def send_whatsapp_messages(
         for message in progress:
             destination = message.phone_num if mode == SendMode.LIVE else test_phone_num
             try:
-                whats_manager.sendwhatmsg(phone_no=destination, message=message.message)
+                whats_manager.sendwhatmsg(phone_no=destination, message=message.body)
             except Exception:  # pylint: disable=broad-except
                 not_sent.append(message)
             time.sleep(random.randint(3, 7))

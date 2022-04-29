@@ -28,7 +28,7 @@ class WhatsAppManager:
             + parsed_massage
         )
 
-        button_xpath = '//*[@id="main"]/footer/div[1]/div[3]/button'
+        button_xpath = '//*[@id="main"]/footer/div[1]/div[2]/div/div[2]/button'
         button = WebDriverWait(
             driver=self.driver, timeout=self.PAGE_LOAD_TIMEOUT_SECONDS
         ).until(EC.presence_of_element_located((By.XPATH, button_xpath)))

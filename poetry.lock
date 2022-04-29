@@ -873,7 +873,7 @@ python-versions = "*"
 name = "pyyaml"
 version = "5.4.1"
 description = "YAML parser and emitter for Python"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, !=3.5.*"
 
@@ -1152,7 +1152,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pyt
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "161ca0e0ecb09191d4e5aa213cbc74db8f39c26e3108073354a1d7d6da962484"
+content-hash = "d8f0b7b21c1895b0859a23a114a6ce23575a8f569f7c2829caf9d7f2b5297051"
 
 [metadata.files]
 appdirs = [

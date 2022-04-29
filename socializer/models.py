@@ -47,3 +47,10 @@ class ContactFilters(enum.Enum):
 
     GENDER_EXISTS = "gender"
     ARABIC_NAME = "arabic"
+
+
+@dataclass
+class Message:
+    full_name: str
+    phone_num: str
+    body: str

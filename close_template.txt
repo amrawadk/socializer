@@ -11,7 +11,5 @@
         name = prefix + " " + first_name
     else:
         name = nickname if nickname else first_name
-
-    emoji = "😀"
 %>
-كل سنه و ${pronoun} ${tayeb} يا ${name} ${emoji} عيد اضحي مبارك عليكم جميعا 😀
+كل سنه و ${pronoun} ${tayeb} يا ${name} ❤️ عيد اضحي مبارك 😀

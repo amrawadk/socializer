@@ -12,6 +12,6 @@
     else:
         name = nickname if nickname else first_name
 
-    emoji = "😀"
+    emoji = "❤️" if prefix or gender.value == "male" else "😀"
 %>
 كل سنه و ${pronoun} ${tayeb} يا ${name} ${emoji} عيد اضحي مبارك عليكم جميعا 😀
