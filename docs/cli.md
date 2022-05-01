@@ -16,26 +16,8 @@ $ socializer [OPTIONS] COMMAND [ARGS]...
 
 **Commands**:
 
-* `analyze-group`: Analyze Google Contacts Group and optionally...
 * `campaign`: Build messaging campaigns
-* `export-contacts`: Export Contacts in a google contact group to...
-* `export-people`: Export People in a google contact group to a...
-
-## `socializer analyze-group`
-
-Analyze Google Contacts Group and optionally add any missing data.
-
-**Usage**:
-
-```console
-$ socializer analyze-group [OPTIONS]
-```
-
-**Options**:
-
-* `-n, --group-name TEXT`: [default: ]
-* `--limit INTEGER`: [default: 20]
-* `--help`: Show this message and exit.
+* `main`
 
 ## `socializer campaign`
 
@@ -70,8 +52,7 @@ $ socializer campaign generate-audience [OPTIONS]
 **Options**:
 
 * `-n, --group-name TEXT`: [default: ]
-* `-f, --field [gender]`: A required field that the audience should have  [default: ]
-* `--arabic-only`: [default: False]
+* `-f, --filters [gender|arabic]`: Supported ways to filter contacts  [default: ]
 * `--output FILENAME`: [default: contacts.csv]
 * `--limit INTEGER`: [default: 20]
 * `--help`: Show this message and exit.
@@ -110,14 +91,48 @@ $ socializer campaign send-whatsapp-messages [OPTIONS]
 * `-p, --test-phone-num TEXT`: A phone number to send messages to when mode is 'test'
 * `--help`: Show this message and exit.
 
-## `socializer export-contacts`
+## `socializer main`
+
+**Usage**:
+
+```console
+$ socializer main [OPTIONS] COMMAND [ARGS]...
+```
+
+**Options**:
+
+* `--help`: Show this message and exit.
+
+**Commands**:
+
+* `analyze-group`: Analyze Google Contacts Group and optionally...
+* `export-contacts`: Export Contacts in a google contact group to...
+* `export-people`: Export People in a google contact group to a...
+
+### `socializer main analyze-group`
+
+Analyze Google Contacts Group and optionally add any missing data.
+
+**Usage**:
+
+```console
+$ socializer main analyze-group [OPTIONS]
+```
+
+**Options**:
+
+* `-n, --group-name TEXT`: [default: ]
+* `--limit INTEGER`: [default: 20]
+* `--help`: Show this message and exit.
+
+### `socializer main export-contacts`
 
 Export Contacts in a google contact group to a csv file.
 
 **Usage**:
 
 ```console
-$ socializer export-contacts [OPTIONS]
+$ socializer main export-contacts [OPTIONS]
 ```
 
 **Options**:
@@ -127,7 +142,7 @@ $ socializer export-contacts [OPTIONS]
 * `--limit INTEGER`: [default: 20]
 * `--help`: Show this message and exit.
 
-## `socializer export-people`
+### `socializer main export-people`
 
 Export People in a google contact group to a csv file.
 
@@ -136,7 +151,7 @@ This includes more details than Contact
 **Usage**:
 
 ```console
-$ socializer export-people [OPTIONS]
+$ socializer main export-people [OPTIONS]
 ```
 
 **Options**:

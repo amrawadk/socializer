@@ -14,6 +14,8 @@ from socializer.models import Contact, Gender
 from socializer.services import _is_arabic
 
 app = typer.Typer(name="socializer", help=__doc__)
+main_app = typer.Typer(name="main")
+app.add_typer(main_app)
 app.add_typer(campaign_app)
 
 
@@ -80,7 +82,7 @@ def _check_arabic_names(people: List[GooglePerson]):
         typer.echo("All people have arabic names!")
 
 
-@app.command()
+@main_app.command()
 def analyze_group(
     group_names: List[str] = typer.Option([], "--group-name", "-n"), limit: int = 20
 ):
@@ -98,7 +100,7 @@ def analyze_group(
         _check_arabic_names(people=people)
 
 
-@app.command()
+@main_app.command()
 def export_contacts(
     group_name: str = typer.Option(...),
     output: typer.FileTextWrite = typer.Option("contacts.csv"),
@@ -115,7 +117,7 @@ def export_contacts(
     typer.echo(f"contacts written to {output.name}")
 
 
-@app.command()
+@main_app.command()
 def export_people(
     group_name: str = typer.Option(...),
     output: typer.FileTextWrite = typer.Option("people.csv"),
