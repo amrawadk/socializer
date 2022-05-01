@@ -100,6 +100,7 @@ def send_whatsapp_messages(
             try:
                 whats_manager.sendwhatmsg(phone_no=destination, message=message.body)
             except Exception:  # pylint: disable=broad-except
+                # TODO: on failure, try other numbers in that contact
                 not_sent.append(message)
             time.sleep(random.randint(3, 7))
 

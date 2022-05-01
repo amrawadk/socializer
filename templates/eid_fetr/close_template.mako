@@ -12,4 +12,4 @@
     else:
         name = nickname if nickname else first_name
 %>
-كل سنه و ${pronoun} ${tayeb} يا ${name} ❤️ عيد اضحي مبارك 😀
+كل سنه و ${pronoun} ${tayeb} يا ${name} ❤️ عيد مبارك عليكم جميعا 😀
