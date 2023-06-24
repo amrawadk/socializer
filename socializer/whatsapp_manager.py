@@ -14,7 +14,7 @@ class WhatsAppManager:
     def __init__(self):
         options = Options()
         options.binary_location = (
-            "/Applications/Brave Browser.app/Contents/MacOS/Brave Browser"
+            "/Applications/Google Chrome 102.app/Contents/MacOS/Google Chrome"
         )
         driver_path = "/usr/local/bin/chromedriver"
         self.driver = webdriver.Chrome(options=options, executable_path=driver_path)
@@ -28,7 +28,10 @@ class WhatsAppManager:
         # Whatsapp requires a country code in the phone number, we're assuming it's all
         # Egypt for now.
         # TODO: this should be updates in the Google contacts to add a prefix based on the country.
-        if not phone_no.startswith("+2"):
+        if phone_no.startswith("00"):
+            phone_no = f"+{phone_no[2:]}"
+
+        if not phone_no.startswith("+"):
             phone_no = f"+2{phone_no}"
 
         self.driver.get(
