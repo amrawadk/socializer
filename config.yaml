@@ -1,13 +1,13 @@
 global:
-  template: templates/eid_fetr/template.mako
+  template: templates/ramadan/template.mako
   filters:
     - arabic_only
   group_limit: 100
 campaigns:
   - group: Family
-    template: templates/eid_fetr/family_template.mako
+    template: templates/ramadan/family_template.mako
   - group: Close Family
-    template: templates/eid_fetr/close_template.mako
+    template: templates/ramadan/close_template.mako
   - group: Elementary School
   - group: College
   - group: Father's Friends
