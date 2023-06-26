@@ -2,6 +2,7 @@ import pytest
 
 import socializer.google_contacts.errors as errors
 from socializer.google_contacts.manager import GoogleContactsManager
+from socializer.google_contacts.models import GoogleContactGroup
 from socializer.models import Gender
 
 
@@ -43,6 +44,17 @@ class TestPeople:
 
 
 class TestGroups:
+    def test_get_users_returns_groups(self) -> None:
+        gcontacts = GoogleContactsManager()
+
+        people = gcontacts.get_people(limit=5)
+        assert len(people) == 5
+        assert people[0].groups == [
+            GoogleContactGroup(
+                name="myContacts", resource_name="contactGroups/myContacts"
+            )
+        ]
+
     def test_non_existing_group_name_raises_exception(self) -> None:
         gcontacts = GoogleContactsManager()
 

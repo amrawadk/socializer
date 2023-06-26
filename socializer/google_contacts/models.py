@@ -1,12 +1,21 @@
 import logging
 from dataclasses import dataclass
-from typing import Dict, Optional
+from typing import Dict, List, Optional
 
 from socializer.google_contacts.errors import (
     GooglePersonHasMoreThanOneName,
     GooglePersonHasNoNames,
 )
 from socializer.models import Contact, Gender
+
+GoogleContactGroupResourceName = str
+GoogleContactGroupName = str
+
+
+@dataclass
+class GoogleContactGroup:
+    name: GoogleContactGroupName
+    resource_name: GoogleContactGroupResourceName
 
 
 @dataclass
@@ -25,10 +34,13 @@ class GooglePerson:
     given_name: str
     phone_num: str
     body: dict
+    groups: List[GoogleContactGroup]
     gender: Optional[Gender] = None
     nickname: Optional[str] = None
 
-    def __init__(self, body: dict) -> None:
+    def __init__(
+        self, body: dict, groups: Optional[List[GoogleContactGroup]] = None
+    ) -> None:
         self.body = body
         self.display_name = self._get_display_name()
         self.prefix = self._get_prefix()
@@ -38,6 +50,7 @@ class GooglePerson:
         self.resource_name = self.body["resourceName"]
         self.etag = self.body["etag"]
         self.gender = self._get_gender()
+        self.groups = groups if groups else []
 
     def _get_display_name(self) -> str:
         return self._get_name_dict()["displayName"]

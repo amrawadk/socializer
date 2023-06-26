@@ -7,7 +7,12 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 
 from socializer.google_contacts.errors import ContactGroupNotFound
-from socializer.google_contacts.models import GooglePerson
+from socializer.google_contacts.models import (
+    GoogleContactGroup,
+    GoogleContactGroupName,
+    GoogleContactGroupResourceName,
+    GooglePerson,
+)
 from socializer.models import Gender
 
 
@@ -42,34 +47,64 @@ class GoogleContactsManager:
                 .connections()
                 .list(
                     resourceName="people/me",
-                    personFields="names,phoneNumbers,genders",
+                    personFields="names,phoneNumbers,genders,memberships",
                     pageSize=page_size,
                     pageToken=page_token,
                 )
                 .execute()
             )
             connections = results.get("connections", [])
-            people.extend([GooglePerson(body=person) for person in connections])
+
+            groups_mapping = {g.resource_name: g.name for g in self._get_groups()}
+            # TODO why is this special?
+            groups_mapping["contactGroups/starred"] = "starred"
+
+            for person in connections:
+                # TODO: how can we improve the resolution of a value that's based on a call to a different API?
+                groups = []
+                for membership in person.get("memberships", []):
+                    group_resource_name = membership["contactGroupMembership"][
+                        "contactGroupResourceName"
+                    ]
+                    group_name = groups_mapping[group_resource_name]
+                    groups.append(
+                        GoogleContactGroup(
+                            name=group_name, resource_name=group_resource_name
+                        )
+                    )
+
+                people.append(GooglePerson(body=person, groups=groups))
+
             page_token = results.get("nextPageToken")
 
         return people[:limit]
 
-    def get_people_in_group(
-        self, group_name: str, limit: int = 20
-    ) -> List[GooglePerson]:
-        ## Get id of that group name
+    def _get_groups(self) -> List[GoogleContactGroup]:
         response = self.service.contactGroups().list().execute()
         contact_groups = response.get("contactGroups", [])
+        return [
+            GoogleContactGroup(name=g["name"], resource_name=g["resourceName"])
+            for g in contact_groups
+        ]
+
+    def _get_group_resource_name_by_name(
+        self, name: GoogleContactGroupName
+    ) -> GoogleContactGroupResourceName:
+        contact_groups = self._get_groups()
+
         group_resource_name = next(
-            (
-                group["resourceName"]
-                for group in contact_groups
-                if group.get("name") == group_name
-            ),
+            (group.resource_name for group in contact_groups if group.name == name),
             None,
         )
         if group_resource_name is None:
-            raise ContactGroupNotFound(group_name=group_name)
+            raise ContactGroupNotFound(group_name=name)
+
+        return group_resource_name
+
+    def get_people_in_group(
+        self, group_name: str, limit: int = 20
+    ) -> List[GooglePerson]:
+        group_resource_name = self._get_group_resource_name_by_name(name=group_name)
 
         ## Get members of that group
         response = (
