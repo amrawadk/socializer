@@ -1,3 +1,4 @@
+import logging
 from dataclasses import dataclass
 from typing import Dict, Optional
 
@@ -45,10 +46,20 @@ class GooglePerson:
         return self._get_name_dict().get("honorificPrefix")
 
     def _get_given_name(self) -> str:
-        return self._get_name_dict()["givenName"]
+        try:
+            return self._get_name_dict()["givenName"]
+        except KeyError:
+            # TODO fix given name parsing
+            logging.warning("failed to extract given name: %s", self.body)
+            return ""
 
     def _get_phone_num(self) -> str:
-        return self.body["phoneNumbers"][0]["canonicalForm"]
+        try:
+            return self.body["phoneNumbers"][0]["canonicalForm"]
+        except KeyError:
+            # TODO fix phone number parsing
+            logging.warning("failed to extract phone numbers: %s", self.body)
+            return ""
 
     def _get_nickname(self) -> Optional[str]:
         nickname = None
@@ -57,6 +68,11 @@ class GooglePerson:
         return nickname
 
     def _get_name_dict(self) -> Dict[str, str]:
+        # TODO figure out why name is missing
+        if "names" not in self.body:
+            logging.warning("name is missing from body: %s", self.body)
+            return {"displayName": ""}
+
         if len(self.body["names"]) > 1:
             raise GooglePersonHasMoreThanOneName(person=self)
         if len(self.body["names"]) == 0:
