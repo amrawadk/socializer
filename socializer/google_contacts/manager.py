@@ -22,19 +22,37 @@ class GoogleContactsManager:
     def __init__(self) -> None:
         self.service = build("people", "v1", credentials=self._get_credentials())
 
-    def get_people(self, limit: int = 20) -> List[GooglePerson]:
-        results = (
-            self.service.people()
-            .connections()
-            .list(
-                resourceName="people/me",
-                personFields="names,phoneNumbers,genders",
-                pageSize=limit,
+    def get_people(self, limit: int = 1000) -> List[GooglePerson]:
+        """Get a list of people in Google Contacts.
+
+        Args:
+            limit: limit for results, defaults to 1000 if not set.
+        """
+
+        # https://developers.google.com/people/api/rest/v1/people.connections/list#query-parameters
+        max_page_size_for_google_api = 1000
+
+        page_size = min(limit, max_page_size_for_google_api)
+
+        people: List[GooglePerson] = []
+        page_token = None
+        while len(people) < limit:
+            results = (
+                self.service.people()
+                .connections()
+                .list(
+                    resourceName="people/me",
+                    personFields="names,phoneNumbers,genders",
+                    pageSize=page_size,
+                    pageToken=page_token,
+                )
+                .execute()
             )
-            .execute()
-        )
-        connections = results.get("connections", [])
-        return [GooglePerson(body=person) for person in connections]
+            connections = results.get("connections", [])
+            people.extend([GooglePerson(body=person) for person in connections])
+            page_token = results.get("nextPageToken")
+
+        return people[:limit]
 
     def get_people_in_group(
         self, group_name: str, limit: int = 20

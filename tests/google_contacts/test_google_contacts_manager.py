@@ -12,6 +12,15 @@ class TestPeople:
         people = gcontacts.get_people(limit=5)
         assert len(people) == 5
 
+    def test_getting_list_of_people_with_pagination(self):
+        """Limit for a single request is 1000 according to the docs:
+        https://developers.google.com/people/api/rest/v1/people.connections/list#query-parameters
+        """
+        gcontacts = GoogleContactsManager()
+
+        people = gcontacts.get_people(limit=1200)
+        assert len(people) == 1200
+
     def test_update_gender_works(self) -> None:
         gcontacts = GoogleContactsManager()
 
