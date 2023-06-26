@@ -8,14 +8,11 @@ from socializer.google_contacts.errors import (
 )
 from socializer.models import Contact, Gender
 
-GoogleContactGroupResourceName = str
-GoogleContactGroupName = str
-
 
 @dataclass
 class GoogleContactGroup:
-    name: GoogleContactGroupName
-    resource_name: GoogleContactGroupResourceName
+    name: str
+    resource_name: str
 
 
 @dataclass
