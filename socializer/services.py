@@ -61,3 +61,13 @@ def create_message(contact: Contact, template: Template) -> Message:
         phone_num=contact.phone_num,
         body=template.render(**contact.__dict__),
     )
+
+class ContactsRepositoryAbstract:
+
+
+class ContactManagerService:
+    def __init__(contacts_repository: ContactsRepositoryAbstract) -> None:
+        self.repository = contacts_repository
+
+    def list_contacts(self, limit: int) -> List[Contact]:
+        return list(self.repository.list_contacts())[:limit]

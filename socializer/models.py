@@ -33,7 +33,7 @@ class Contact:
         nickname: An optional nickname
         gender: the contact's gender
     """
-
+    id: str
     full_name: str
     first_name: str
     phone_num: str
