@@ -21,6 +21,7 @@ typer = {extras = ["all"], version = "^0.3.2"}
 PyInquirer = "^1.0.3"
 PyArabic = "^0.6.10"
 PyYAML = "^5.4.1"
+playwright = "^1.35.0"
 
 [tool.poetry.dev-dependencies]
 black = "^20.8b1"

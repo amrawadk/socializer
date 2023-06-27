@@ -49,12 +49,13 @@ class GoogleContactsManager:
                     personFields="names,phoneNumbers,genders,memberships",
                     pageSize=page_size,
                     pageToken=page_token,
+                    sortOrder="LAST_MODIFIED_DESCENDING",
                 )
                 .execute()
             )
             connections = results.get("connections", [])
 
-            groups_mapping = {g.resource_name: g.name for g in self._get_groups()}
+            groups_mapping = {g.resource_name: g.name for g in self.get_groups()}
             # TODO why is this special?
             groups_mapping["contactGroups/starred"] = "starred"
 
@@ -66,6 +67,11 @@ class GoogleContactsManager:
                         "contactGroupResourceName"
                     ]
                     group_name = groups_mapping[group_resource_name]
+
+                    # ignore group 'all'
+                    if group_name == "myContacts":
+                        continue
+
                     groups.append(
                         GoogleContactGroup(
                             name=group_name, resource_name=group_resource_name
@@ -82,7 +88,7 @@ class GoogleContactsManager:
         # TODO consider if a limit is actually needed
         return people[:limit]
 
-    def _get_groups(self) -> List[GoogleContactGroup]:
+    def get_groups(self) -> List[GoogleContactGroup]:
         response = self.service.contactGroups().list().execute()
         contact_groups = response.get("contactGroups", [])
         return [
@@ -94,7 +100,7 @@ class GoogleContactsManager:
         self, group_name: str, limit: int = 20
     ) -> List[GooglePerson]:
         # assert the group exists
-        contact_groups = self._get_groups()
+        contact_groups = self.get_groups()
         matching_groups = [
             group for group in contact_groups if group.name == group_name
         ]
@@ -128,6 +134,37 @@ class GoogleContactsManager:
         )
 
         return GooglePerson(body=response)
+
+    def delete_person(self, resource_name: str) -> None:
+        self.service.people().deleteContact(
+            resourceName=resource_name,
+        ).execute()
+
+    def add_person_to_group(
+        self, person: GooglePerson, group_resource_name: str
+    ) -> GooglePerson:
+        response = (
+            self.service.people()
+            .updateContact(
+                resourceName=person.resource_name,
+                updatePersonFields="memberships",
+                body={
+                    "etag": person.etag,
+                    "memberships": [
+                        {
+                            "contactGroupMembership": {
+                                "contactGroupResourceName": group_resource_name
+                            }
+                        }
+                    ],
+                },
+            )
+            .execute()
+        )
+
+        # TODO find a better way to parse groups
+        groups = self.get_groups()
+        return GooglePerson(body=response, groups=groups)
 
     def _get_credentials(self):
         creds = None
