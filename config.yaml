@@ -1,15 +1,15 @@
 global:
-  template: templates/ramadan/template.mako
+  template: templates/eid_adha/template.mako
   filters:
     - arabic_only
   group_limit: 100
 campaigns:
   - group: Family
-    template: templates/ramadan/family_template.mako
+    template: templates/eid_adha/family_template.mako
   - group: Close Family
-    template: templates/ramadan/close_template.mako
+    template: templates/eid_adha/close_template.mako
   - group: Elementary School
-  - group: College
+  - group: Bachelors
   - group: Father's Friends
   - group: Friends
   - group: High School
@@ -19,4 +19,3 @@ campaigns:
   - group: Resala
   - group: Tempo
   - group: Valeo
-  - group: Khamayl Security

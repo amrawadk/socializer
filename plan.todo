@@ -4,6 +4,7 @@ Validation:
     - validate phone numbers
         - some are missing '+2', this can be an optional checker for 'country code'
         - some contacts have multiple numbers, we should keep trying till we get a match
+    - first name shouldn't contain spaces, or dots, or be 2 letters or less (likely a prefix then).
 
 Features:
     - Add a new field: Religion

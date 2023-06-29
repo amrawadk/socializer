@@ -1,9 +1,11 @@
 """Automation first approach to building and maintaing personal networks."""
+from pathlib import Path
 from typing import List
 
 import typer
 from dataclass_csv import DataclassWriter
 from PyInquirer import prompt
+from playwright.sync_api import sync_playwright
 
 from socializer.cli.campaign import app as campaign_app
 from socializer.data_augmentation import GenderClassifier
@@ -42,7 +44,11 @@ def _fix_missing_genders(gmanager: GoogleContactsManager, people: List[GooglePer
                     "default": "a",
                     "choices": [
                         {"key": "a", "name": "Accept", "value": result.gender},
-                        {"key": "m", "name": "Override to Male", "value": "male",},
+                        {
+                            "key": "m",
+                            "name": "Override to Male",
+                            "value": "male",
+                        },
                         {"key": "f", "name": "Override to Female", "value": "female"},
                     ],
                 }
@@ -50,7 +56,9 @@ def _fix_missing_genders(gmanager: GoogleContactsManager, people: List[GooglePer
             answers = prompt(questions)
             gender = Gender(answers["gender"])
         gmanager.update_gender(
-            resource_name=person.resource_name, etag=person.etag, gender=gender,
+            resource_name=person.resource_name,
+            etag=person.etag,
+            gender=gender,
         )
 
 
@@ -98,6 +106,101 @@ def analyze_group(
 
         _check_missing_gender(gmanager=gmanager, people=people)
         _check_arabic_names(people=people)
+
+
+# TODO refactor this
+@main_app.command()
+def analyze_contacts():  # pylint: disable=too-many-locals
+    """Analyze Google Contacts and optionally add any missing data."""
+    gmanager = GoogleContactsManager()
+
+    people = gmanager.get_people()
+    groups = gmanager.get_groups()
+
+    playwright = sync_playwright().start()
+
+    # log into gcontacts if not logged in already
+    gcontacts_storage_state_path = "playwright/.auth/gcontacts.json"
+
+    contacts_browser = playwright.firefox.launch(headless=False)
+    if not Path(gcontacts_storage_state_path).is_file():
+        # I need to log in again
+        contacts_page = contacts_browser.new_page()
+        contacts_page.goto("https://contacts.google.com")
+        input("hit 'Enter' once you're logged in")
+        contacts_page.context.storage_state(path=gcontacts_storage_state_path)
+    else:
+        # I'm already logged in.
+        contacts_page = contacts_browser.new_page(
+            storage_state=gcontacts_storage_state_path
+        )
+        contacts_page.goto("https://contacts.google.com")
+
+    # log into what's app if not logged in already
+    # TODO figure out why this is not working
+    whatsapp_storage_state_path = "playwright/.auth/whatsapp.json"
+
+    whatsapp_browser = playwright.chromium.launch(headless=False)
+    if not Path(whatsapp_storage_state_path).is_file():
+        # I need to log in again
+        whatsapp_page = whatsapp_browser.new_page()
+        whatsapp_page.goto("https://web.whatsapp.com")
+        input("hit 'Enter' when the browser is linked and the messages are open!")
+        whatsapp_page.context.storage_state(path=whatsapp_storage_state_path)
+    else:
+        # I'm already logged in.
+        whatsapp_page = whatsapp_browser.new_page(
+            storage_state=whatsapp_storage_state_path
+        )
+        whatsapp_page.goto("https://web.whatsapp.com")
+
+    group_choices = [dict(name=g.name, value=g.resource_name) for g in groups]
+
+    # TODO ignore default group here.
+    missing_group = [p for p in people if len(p.groups) < 1]
+    typer.echo(f"Found {len(missing_group)} people in the group")
+
+    for idx, person in enumerate(missing_group):
+        person_id = person.resource_name.split("/")[1]
+
+        contacts_page.goto(f"https://contacts.google.com/person/{person_id}")
+
+        # Whatsapp requires a country code in the phone number, we're assuming it's all
+        # Egypt for now.
+        # TODO: this should be updates in the Google contacts to add a prefix based on the country.
+        phone_no = person.phone_num
+        if phone_no.startswith("00"):
+            phone_no = f"+{phone_no[2:]}"
+
+        if not phone_no.startswith("+"):
+            phone_no = f"+2{phone_no}"
+
+        whatsapp_page.goto(f"https://web.whatsapp.com/send?phone={phone_no}")
+
+        message = """[{current}/{total}] Choose action for '{name}': """.format(
+            current=str(idx + 1),
+            total=len(missing_group),
+            name=person.display_name,
+        )
+
+        questions = [
+            {
+                "type": "list",
+                "message": message,
+                "name": "action",
+                "choices": [
+                    {"name": "Delete", "value": "delete"},
+                ]
+                + group_choices,
+            }
+        ]
+        answers = prompt(questions)
+        action = answers["action"]
+
+        if action == "delete":
+            gmanager.delete_person(resource_name=person.resource_name)
+        else:
+            gmanager.add_person_to_group(person=person, group_resource_name=action)
 
 
 @main_app.command()

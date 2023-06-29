@@ -10,7 +10,6 @@ socializer = "socializer.cli.main:app"
 
 [tool.poetry.dependencies]
 python = "^3.7"
-selenium = "^3.141.0"
 google-api-python-client = "^2.2.0"
 google-auth-httplib2 = "^0.1.0"
 google-auth-oauthlib = "^0.4.4"
@@ -21,6 +20,7 @@ typer = {extras = ["all"], version = "^0.3.2"}
 PyInquirer = "^1.0.3"
 PyArabic = "^0.6.10"
 PyYAML = "^5.4.1"
+playwright = "^1.35.0"
 
 [tool.poetry.dev-dependencies]
 black = "^20.8b1"
