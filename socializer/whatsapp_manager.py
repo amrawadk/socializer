@@ -1,25 +1,19 @@
 from urllib.parse import quote
 
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait
+from playwright.sync_api import sync_playwright
 
 
 class WhatsAppManager:
     PAGE_LOAD_TIMEOUT_SECONDS = 10
 
     def __init__(self):
-        options = Options()
-        options.binary_location = (
-            "/Applications/Google Chrome 102.app/Contents/MacOS/Google Chrome"
-        )
-        driver_path = "/usr/local/bin/chromedriver"
-        self.driver = webdriver.Chrome(options=options, executable_path=driver_path)
-        # open whats app page and wait for manual input that the browser is linked correctly
-        self.driver.get("https://web.whatsapp.com")
+        # TODO remember to tear down
+        playwright = sync_playwright().start()
+
+        browser = playwright.chromium.launch(headless=False)
+        self.page = browser.new_page()
+        self.page.goto("https://web.whatsapp.com")
+
         input("hit 'Enter' when the browser is linked and the messages are open!")
 
     def sendwhatmsg(self, phone_no, message):
@@ -34,17 +28,11 @@ class WhatsAppManager:
         if not phone_no.startswith("+"):
             phone_no = f"+2{phone_no}"
 
-        self.driver.get(
+        self.page.goto(
             "https://web.whatsapp.com/send?phone="
             + phone_no
             + "&text="
             + parsed_massage
         )
 
-        button_xpath = (
-            '//*[@id="main"]/footer/div[1]/div/span[2]/div/div[2]/div[2]/button'
-        )
-        button = WebDriverWait(
-            driver=self.driver, timeout=self.PAGE_LOAD_TIMEOUT_SECONDS
-        ).until(EC.presence_of_element_located((By.XPATH, button_xpath)))
-        button.send_keys(Keys.RETURN)
+        self.page.get_by_test_id("compose-btn-send").click()
